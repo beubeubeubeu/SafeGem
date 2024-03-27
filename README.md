@@ -1,4 +1,4 @@
-# SafeTickets
+# SafeGem
 Final project during Alyra blockchain developer training 
 
 
