@@ -14,7 +14,7 @@ async function deployedContractFixture() {
   return { userCollection, owner, sgnr1, sgnr2, sgnr3 };
 };
 
-describe("User Collection Implementation tests", function () {
+describe("User Collection tests", function () {
 
   // describe('Say hello', function () {
   //   it('Should say hello when say hello is called', async function () {

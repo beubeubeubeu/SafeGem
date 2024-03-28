@@ -21,4 +21,5 @@ Final project during Alyra blockchain developer training
   yarn hardhat node --network hardhat
   yarn hardhat run scripts/deploy.js --network localhost
   yarn hardhat test test/unit/UserCollection.test.js
+  yarn hardhat test test/unit/UserCollectionFactory.test.js
 -->
