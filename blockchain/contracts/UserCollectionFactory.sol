@@ -15,7 +15,7 @@ contract UserCollectionFactory {
 
   // TODO : indexed if needed to filter
   event UserCollectionCreated(
-    string _collectionName,
+    address _userAddress,
     address _newCollectionAddress,
     uint _timestamp
   );
@@ -29,14 +29,10 @@ contract UserCollectionFactory {
 
   /**
   * @dev Creates a new clone of the UserCollection contract.
-  * @param _collectionName The name of the collection for the new UserCollection.
   */
-  function createNFTCollection(
-    string memory _collectionName
-  ) external returns (address newCollectionAddress) {
-    newCollectionAddress = Clones.clone(userCollection);
-    emit UserCollectionCreated(_collectionName, newCollectionAddress, block.timestamp);
-    return newCollectionAddress;
+  function createNFTCollection() external {
+    address newCollectionAddress = Clones.clone(userCollection);
+    emit UserCollectionCreated(msg.sender, newCollectionAddress, block.timestamp);
   }
 
 }

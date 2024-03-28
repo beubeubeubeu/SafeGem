@@ -33,7 +33,7 @@ describe("User Collection Factory tests", function () {
 		describe('Event emitting', function () {
       it('Should emit an event upon success', async function () {
         const { userCollectionFactory } = await loadFixture(deployedContractFixture);
-				await expect(userCollectionFactory.createNFTCollection("My new collection")).to.emit(userCollectionFactory, "UserCollectionCreated").withArgs("My new collection", anyValue, anyUint);
+				await expect(userCollectionFactory.createNFTCollection()).to.emit(userCollectionFactory, "UserCollectionCreated").withArgs(anyValue, anyValue, anyUint);
 			});
     })
   })
