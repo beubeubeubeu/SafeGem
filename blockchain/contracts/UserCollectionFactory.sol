@@ -5,8 +5,6 @@ pragma solidity ^0.8.25;
 import "./UserCollection.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
-// TODO : Add description, used to deploy minimal
-// proxy contracts, also known as "clones" ERC-1167
 contract UserCollectionFactory {
 
   error InvalidImplementationAddress();
@@ -30,8 +28,9 @@ contract UserCollectionFactory {
   /**
   * @dev Creates a new clone of the UserCollection contract.
   */
-  function createNFTCollection() external {
+  function createNFTCollection(string memory _collectionName) external {
     address newCollectionAddress = Clones.clone(userCollection);
+    UserCollection(newCollectionAddress).initialize(_collectionName);
     emit UserCollectionCreated(msg.sender, newCollectionAddress, block.timestamp);
   }
 

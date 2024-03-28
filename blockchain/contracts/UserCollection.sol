@@ -1,34 +1,33 @@
 // SPDX-License-Identifier: MIT
 
-import "@openzeppelin/contracts/token/common/ERC2981.sol";
-import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-
 pragma solidity ^0.8.25;
 
-contract UserCollection {
+import "@openzeppelin/contracts/access/AccessControl.sol";
+
+contract UserCollection is AccessControl {
 
   error AlreadyInitialized();
+  error CollectionNameEmpty();
 
-  // bool private isInitialized;
+  bool private isInitialized;
+  uint private initializationTS;
   string public collectionName;
+  bytes32 public constant OWNER = keccak256("OWNER");
 
-  // function initializer(string memory _collectionName) external {
-  //   if (isInitialized) {
-  //     revert AlreadyInitialized();
-  //   }
-  //   collectionName = _collectionName;
-  //   isInitialized = true;
-  // }
-
-  function setCollectionName(string memory _collectionName) external {
+  function initialize(string memory _collectionName, address _userAddress) external {
+    if(isInitialized) {
+      revert AlreadyInitialized();
+    }
+    _grantRole(OWNER, _userAddress);
     collectionName = _collectionName;
+    initializationTS = block.timestamp;
+    isInitialized = true;
   }
 
-  function getCollection() public {
-    // TODO
-  }
-
-  function getCollectionName() public {
-    // TODO
+  function setCollectionName(string memory _collectionName) external onlyRole(OWNER) {
+    if (bytes(_collectionName).length == 0) {
+      revert CollectionNameEmpty();
+    }
+    collectionName = _collectionName;
   }
 }
