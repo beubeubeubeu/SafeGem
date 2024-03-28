@@ -1,5 +1,5 @@
 # SafeTickets
-Final project during Alyra blockchain developer training 
+Final project during Alyra blockchain developer training
 
 
 __Une marketplace NFT__
@@ -14,3 +14,11 @@ Dans cette figure imposée, vous devrez permettre à votre projet de mettre en p
 - [ ] de transférer des NFT possédés et notamment via un système de vente (direct ou enchères)
 
 Libre à vous de gérer ces collections comme vous le souhaitez, par exemple garder dans votre smart contract l’ensemble des collections créées via votre application et de n’afficher que celles ci. Vos NFT peuvent utiliser la norme d’implémentation que vous souhaitez (erc721, 1155, 721A, Solmate…).
+Final project during Alyra blockchain developer training
+
+
+<!--
+  yarn hardhat node --network hardhat
+  yarn hardhat run scripts/deploy.js --network localhost
+  yarn hardhat test test/unit/UserCollection.test.js
+-->
