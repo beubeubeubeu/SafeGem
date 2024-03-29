@@ -11,7 +11,6 @@ contract UserCollectionFactory {
 
   address immutable userCollection;
 
-  // TODO : indexed if needed to filter
   event UserCollectionCreated(
     address _userAddress,
     address _newCollectionAddress,
@@ -20,7 +19,7 @@ contract UserCollectionFactory {
 
   constructor(address _userCollection) {
     if (_userCollection == address(0)) {
-        revert InvalidImplementationAddress();
+      revert InvalidImplementationAddress();
     }
     userCollection = _userCollection;
   }
@@ -30,8 +29,7 @@ contract UserCollectionFactory {
   */
   function createNFTCollection(string memory _collectionName) external {
     address newCollectionAddress = Clones.clone(userCollection);
-    UserCollection(newCollectionAddress).initialize(_collectionName);
+    UserCollection(newCollectionAddress).initialize(_collectionName, msg.sender);
     emit UserCollectionCreated(msg.sender, newCollectionAddress, block.timestamp);
   }
-
 }
