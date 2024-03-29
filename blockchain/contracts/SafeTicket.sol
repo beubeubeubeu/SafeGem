@@ -7,19 +7,26 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract SafeTicket is ERC721URIStorage {
 
-    error MustBeCollectionOwner();
+  error MustBeCollectionOwner();
 
-    uint256 private _nextTicketId;
+  uint256 private _nextTicketId;
 
-    constructor() ERC721("SafeTicket", "SFT") {}
+  // TODO: Add struct SafeTicket {
+  //     address collection;
+  //     string ticketURI;
+  // }
 
-    function mintTicket(address collection, string memory _ticketURI) public returns (uint256) {
-      if(!IAccessControl(collection).hasRole(keccak256("OWNER"), msg.sender)) {
-        revert MustBeCollectionOwner();
-      }
-      uint256 TicketId = _nextTicketId++;
-      _mint(collection, TicketId);
-      _setTokenURI(TicketId, _ticketURI);
-      return TicketId;
+  // TODO: Add mapping id => SafeTicket
+
+  constructor() ERC721("SafeTicket", "SFT") {}
+
+  function mintTicket(address collection, string memory _ticketURI) public returns (uint256) {
+    if(!IAccessControl(collection).hasRole(keccak256("OWNER"), msg.sender)) {
+      revert MustBeCollectionOwner();
     }
+    uint256 TicketId = _nextTicketId++;
+    _mint(collection, TicketId);
+    _setTokenURI(TicketId, _ticketURI);
+    return TicketId;
+  }
 }

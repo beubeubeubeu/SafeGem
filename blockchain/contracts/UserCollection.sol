@@ -10,7 +10,7 @@ contract UserCollection is AccessControl {
   error CollectionNameEmpty();
 
   bool private isInitialized;
-  uint private initializationTS;
+  uint public initializationTS;
   string public collectionName;
   bytes32 public constant OWNER = keccak256("OWNER");
 
