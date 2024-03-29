@@ -11,22 +11,33 @@ contract SafeTicket is ERC721URIStorage {
 
   uint256 private _nextTicketId;
 
-  // TODO: Add struct SafeTicket {
-  //     address collection;
-  //     string ticketURI;
-  // }
-
-  // TODO: Add mapping id => SafeTicket
-
   constructor() ERC721("SafeTicket", "SFT") {}
 
-  function mintTicket(address collection, string memory _ticketURI) public returns (uint256) {
-    if(!IAccessControl(collection).hasRole(keccak256("OWNER"), msg.sender)) {
+  modifier onlyCollectionOwner(address _collection) {
+    if(!isCollectionOwner(_collection)) {
       revert MustBeCollectionOwner();
     }
+    _;
+  }
+
+  /**
+   * @dev Mint a new ticket
+   * chose mint over safeMint based on:
+   * https://ethereum.stackexchange.com/questions/115280/mint-vs-safemint-which-is-best-for-erc721
+   */
+  function mintTicket(address _collection, string memory _ticketURI) external onlyCollectionOwner(_collection) returns (uint256) {
+
     uint256 TicketId = _nextTicketId++;
-    _mint(collection, TicketId);
+    _mint(_collection, TicketId);
     _setTokenURI(TicketId, _ticketURI);
     return TicketId;
+  }
+
+  function attachTicketCollection(address _collection, uint256 ticketId, address newOwner) external onlyCollectionOwner(_collection) {
+
+  }
+
+  function isCollectionOwner(address collection) private view returns (bool) {
+    return IAccessControl(collection).hasRole(keccak256("OWNER"), msg.sender);
   }
 }
