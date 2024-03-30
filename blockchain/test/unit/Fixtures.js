@@ -41,6 +41,19 @@ async function initializedUserCollectionFixture() {
   return { userCollection, owner, sgnr1 };
 }
 
+//
+// To test SafeTickets
+// We need a collection contract with msg.sender as role OWNER address
+//   => at first just try to create a new collection and initialize it from "owner" address
+// And a SafeTickets contract
+//
+async function safeTicketsFixture() {
+  const { userCollection, owner, sgnr1 } = await loadFixture(initializedUserCollectionFixture);
+  const SafeTickets = await ethers.getContractFactory('SafeTickets');
+  const safeTickets = await SafeTickets.deploy(userCollection.address);
+  return { safeTickets, userCollection, owner, sgnr1 };
+}
+
 module.exports = {
   deployedContractFixture,
   clonedOneUserCollectionFixture,

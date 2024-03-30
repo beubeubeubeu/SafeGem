@@ -1,7 +1,15 @@
-// Set on sale
+// SPDX-License-Identifier: MIT
 
-// Set price
+pragma solidity ^0.8.25;
 
-// Buy NFT
+contract Marketplace {
 
-// Call ERC721 from SafeTicket safeTransferFrom (safe transfer from checks if an account and not a contract is the new owner)
+  // Set on sale
+
+  // Set price
+
+  // Buy NFT
+
+  // Call ERC721 from SafeTicket safeTransferFrom (safe transfer from checks if an account and not a contract is the new owner)
+
+}

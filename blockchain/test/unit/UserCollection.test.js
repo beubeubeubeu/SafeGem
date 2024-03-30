@@ -43,7 +43,7 @@ describe("UserCollection.sol tests", function () {
         await expect(userCollection.setCollectionName("")).to.be.revertedWithCustomError(userCollection, "CollectionNameEmpty");
       });
 
-      it('Should revert if called by non-owner', async function () {
+      it('Should revert if called by non owner', async function () {
         const { userCollection, sgnr1 } = await loadFixture(initializedUserCollectionFixture);
         await expect(userCollection.connect(sgnr1).setCollectionName("New Name")).to.be.revertedWithCustomError(userCollection, "AccessControlUnauthorizedAccount").withArgs(sgnr1.address, ethers.id("OWNER"));
       });
