@@ -28,10 +28,6 @@ contract SafeTickets is ERC721URIStorage {
    * Chose mint over safeMint based on:
    * https://ethereum.stackexchange.com/questions/115280/mint-vs-safemint-which-is-best-for-erc721.
    *
-   * Notice that if a ticket is then transferred, the _mint(TO) will
-   * Until person uses set collection
-   * be a wallet and not a contract.
-   * which is in fact a transfer to collection.
    */
   function mintTicket(address _collection, string memory _ticketURI)
     external

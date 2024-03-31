@@ -41,21 +41,40 @@ async function initializedUserCollectionFixture() {
   return { userCollection, owner, sgnr1 };
 }
 
-//
-// To test SafeTickets
-// We need a collection contract with msg.sender as role OWNER address
-//   => at first just try to create a new collection and initialize it from "owner" address
-// And a SafeTickets contract
-//
-async function safeTicketsFixture() {
+async function safeTicketFixture() {
   const { userCollection, owner, sgnr1 } = await loadFixture(initializedUserCollectionFixture);
-  const SafeTickets = await ethers.getContractFactory('SafeTickets');
-  const safeTickets = await SafeTickets.deploy(userCollection.address);
-  return { safeTickets, userCollection, owner, sgnr1 };
+  const SafeTicket = await ethers.getContractFactory('SafeTickets');
+  const safeTicket = await SafeTicket.deploy();
+  const userCollectionAddress = await userCollection.getAddress();
+  const ticketURI = "https://example.com/ticket";
+  return { safeTicket, userCollectionAddress, ticketURI, owner, sgnr1 };
 }
+
+async function mintedTicketFixture() {
+  const { safeTicket, userCollectionAddress, ticketURI } = await loadFixture(safeTicketFixture);
+  // Wrap Transfer event listening in a promise
+  const mintedTicketPromise = new Promise((resolve) => {
+    safeTicket.on("Transfer", (from, to, ticketId, event) => {
+      console.log("Minted ticket from", from);
+      console.log("Minted ticket to", to);
+      console.log("Minted ticket id ", ticketId);
+      event.removeListener();
+      resolve(ticketId); // Resolve the promise with the token Id
+    });
+  })
+
+  const tx = await safeTicket.mintTicket(userCollectionAddress, ticketURI);
+  await tx.wait();
+
+  // Wait for the promise to resolve with the token Id
+  const ticketId = await mintedTicketPromise;
+  return { safeTicket, userCollectionAddress, ticketURI, ticketId };
+};
 
 module.exports = {
   deployedContractFixture,
   clonedOneUserCollectionFixture,
-  initializedUserCollectionFixture
+  initializedUserCollectionFixture,
+  safeTicketFixture,
+  mintedTicketFixture
 };
