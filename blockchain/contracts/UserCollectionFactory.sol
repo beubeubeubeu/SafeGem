@@ -2,12 +2,12 @@
 
 pragma solidity ^0.8.25;
 
-import "./UserCollection.sol";
+import { UserCollection } from "./UserCollection.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract UserCollectionFactory {
 
-  error InvalidImplementationAddress();
+  error UCF_InvalidImplementationAddress();
 
   address immutable userCollection;
 
@@ -19,7 +19,7 @@ contract UserCollectionFactory {
 
   constructor(address _userCollection) {
     if (_userCollection == address(0)) {
-      revert InvalidImplementationAddress();
+      revert UCF_InvalidImplementationAddress();
     }
     userCollection = _userCollection;
   }

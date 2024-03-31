@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract SafeTickets is ERC721URIStorage {
 
-  error MustBeCollectionOwner();
+  error ST_MustBeCollectionOwner();
 
-  uint256 private _nextTicketId;
+  uint private _nextTicketId;
 
   constructor() ERC721("SafeTicket", "SFT") {}
 
@@ -17,7 +17,7 @@ contract SafeTickets is ERC721URIStorage {
 
   modifier onlyCollectionOwner(address _collection) {
     if(!isCollectionOwner(_collection)) {
-      revert MustBeCollectionOwner();
+      revert ST_MustBeCollectionOwner();
     }
     _;
   }

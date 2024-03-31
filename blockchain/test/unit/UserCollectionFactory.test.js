@@ -29,7 +29,6 @@ describe("UserCollectionFactory.sol tests", function () {
 				await expect(userCollectionFactory.createNFTCollection("My new collection")).to.emit(userCollectionFactory, "UserCollectionCreated").withArgs(owner.address, anyValue, anyUint);
 			});
     });
-
   });
 
 })

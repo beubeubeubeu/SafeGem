@@ -50,7 +50,7 @@ async function main() {
   }
 
   // **** Deploy Marketplace
-  const marketplace = await hre.ethers.deployContract("Marketplace");
+  const marketplace = await hre.ethers.deployContract("Marketplace", [safeTicketsAddress]);
   await marketplace.deploymentTransaction().wait(network.config.blockConfirmations || 1);
   const marketplaceAddress = marketplace.target;
 
@@ -61,7 +61,7 @@ async function main() {
   // **************************************** Verify Marketplace on Etherscan
   if(!network.name.includes('localhost') && process.env.ETHERSCAN_API_KEY) {
     console.log('Veryfiying Marketplace contract on Etherscan...');
-    await verify(marketplaceAddress);
+    await verify(marketplaceAddress, [safeTicketsAddress]);
   }
 }
 
