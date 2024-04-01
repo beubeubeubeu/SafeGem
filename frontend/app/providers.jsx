@@ -1,12 +1,11 @@
-import '../styles/globals.css';
-import '@rainbow-me/rainbowkit/styles.css';
-
-import type { AppProps } from 'next/app';
-
-import { ChakraProvider } from '@chakra-ui/react';
+'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ChakraProvider } from '@chakra-ui/react';
+import '@rainbow-me/rainbowkit/styles.css';
 import { WagmiProvider } from 'wagmi';
+// Overrides charka-ui theme
+import theme from '../theme/theme';
 import {
   arbitrum,
   base,
@@ -19,7 +18,7 @@ import {
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 
 const config = getDefaultConfig({
-  appName: 'RainbowKit App',
+  appName: 'SafeTickets',
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '',
   chains: [
     mainnet,
@@ -34,18 +33,16 @@ const config = getDefaultConfig({
 
 const client = new QueryClient();
 
-function SafeTickets({ Component, pageProps }: AppProps) {
+export default function Providers({ children }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
         <RainbowKitProvider coolMode={true}>
-          <ChakraProvider>
-            <Component {...pageProps} />
+          <ChakraProvider theme={theme}>
+            {children}
           </ChakraProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
 }
-
-export default SafeTickets;
