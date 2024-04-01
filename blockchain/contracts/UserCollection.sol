@@ -65,10 +65,9 @@ contract UserCollection {
     SafeTickets(safeTickets).approve(_to, _ticketId);
   }
 
-  // TODO
-  // function transferTicket(address _to, uint _ticketId) external onlyTicketForSale(_ticketId) {
-    // SafeTickets(safeTickets).safeTransferFrom(address(this), to, ticketId);
-  // }
+  function transferTicket(address _from, address _to, uint _ticketId) external {
+    SafeTickets(safeTickets).safeTransferFrom(_from, _to, _ticketId);
+  }
 
   /**
    * @dev The owner should be able to withdraw Eth.

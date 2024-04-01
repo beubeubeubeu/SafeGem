@@ -90,9 +90,19 @@ async function mintedTicketFixture() {
   return { safeTickets, marketplace, userCollectionAddress, ticketURI, ticketId, owner, sgnr1 };
 };
 
-async function marketplaceFixture() {
-  const { safeTickets, marketplace, userCollectionAddress, ticketURI, ticketId, owner, sgnr1 } = await loadFixture(mintedTicketFixture);
-  return { marketplace, safeTickets, userCollectionAddress, ticketURI, ticketId, owner, sgnr1 };
+async function ticketToBuyFixture() {
+  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI, ticketId } = await loadFixture(mintedTicketFixture);
+  // Set the ticket on sale and define a price
+  await marketplace.setTicketOnSale(ticketId, true);
+  const ticketPrice = ethers.parseEther("2.0");
+  await marketplace.setTicketPrice(ticketId, ticketPrice);
+  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI, ticketId, ticketPrice };
+}
+
+async function ticketBoughtFixture() {
+  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI, ticketId, ticketPrice } = await loadFixture(ticketToBuyFixture);
+  await marketplace.connect(sgnr1).buyTicket(ticketId, { value: ticketPrice })
+  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI, ticketId, ticketPrice };
 }
 
 module.exports = {
@@ -101,5 +111,6 @@ module.exports = {
   clonedOneUserCollectionFixture,
   initializedUserCollectionFixture,
   mintedTicketFixture,
-  marketplaceFixture
+  ticketToBuyFixture,
+  ticketBoughtFixture
 };

@@ -9,6 +9,7 @@ contract Marketplace {
 
   error WithdrawFailed();
   error TicketNotForSale();
+  error TicketAlreadySold();
   error NotEnoughFundsProvided();
   error NotEnoughFundsOnBalance();
   error MP_InvalidImplementationAddress();
@@ -47,7 +48,8 @@ contract Marketplace {
 
   modifier onlyCollectionOwner(uint _ticketId) {
     if(!isCollectionOwner(_ticketId)) {
-      revert MP_MustBeCollectionOwner("Ticket must be in collection and collection must be owned by msg.sender");
+      revert MP_MustBeCollectionOwner("Ticket must be in "
+      "collection and collection must be owned by msg.sender");
     }
     _;
   }
@@ -60,6 +62,9 @@ contract Marketplace {
     external
     onlyCollectionOwner(_ticketId)
   {
+    if(_onSale == true && ticketSelling[_ticketId].selling) {
+      revert TicketAlreadySold();
+    }
     ticketSelling[_ticketId].onSale = _onSale;
     emit TicketOnSaleChanged(_ticketId, _onSale);
   }
@@ -83,7 +88,7 @@ contract Marketplace {
    * ticket calling OpenZeppelin ERC721 approve
    * method. Also augment sellers balance.
    * Also sets "selling" true so that nobody
-   * else can get approved
+   * else can get approved in the meantime.
    *
    *
    */
@@ -96,11 +101,14 @@ contract Marketplace {
       revert NotEnoughFundsProvided();
     }
     SafeTickets safeTicketsInstance = SafeTickets(safeTickets);
-    UserCollection userCollectionInstance = UserCollection(payable(safeTicketsInstance.ownerOf(_ticketId)));
+    UserCollection userCollectionInstance = UserCollection(
+      payable(safeTicketsInstance.ownerOf(_ticketId))
+    );
     userCollectionInstance.approveBuyer(msg.sender, _ticketId);
     address formerWalletOwner = userCollectionInstance.owner();
     balances[formerWalletOwner] += msg.value;
     ticketSelling[_ticketId].selling = true;
+    ticketSelling[_ticketId].onSale = false;
     emit TicketBought(_ticketId, msg.sender, msg.value);
   }
 
@@ -114,11 +122,14 @@ contract Marketplace {
     external
   {
     SafeTickets safeTicketsInstance = SafeTickets(safeTickets);
-    safeTicketsInstance.safeTransferFrom(
-      safeTicketsInstance.ownerOf(_ticketId),
-      msg.sender,
-      _ticketId
+    UserCollection userCollectionInstance = UserCollection(
+      payable(safeTicketsInstance.ownerOf(_ticketId))
     );
+    address formerOwner = safeTicketsInstance.ownerOf(_ticketId);
+    address newOwner = safeTicketsInstance.getApproved(_ticketId);
+    userCollectionInstance.transferTicket(formerOwner, newOwner, _ticketId);
+    ticketSelling[_ticketId].selling = false;
+    emit TicketTransferred(_ticketId, formerOwner, newOwner);
   }
 
   /**
