@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require('hardhat-docgen');
 require('dotenv').config()
 
 const ALCHEMY = process.env.ALCHEMY || "";
