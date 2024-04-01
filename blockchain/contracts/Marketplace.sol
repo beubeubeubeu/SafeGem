@@ -142,7 +142,7 @@ contract Marketplace {
     balances[msg.sender] -= _amount;
     (bool received,) = msg.sender.call{ value: _amount }('');
     if(!received) {
-        revert WithdrawFailed();
+      revert WithdrawFailed();
     }
     emit FundsWithdrawed(msg.sender, _amount);
   }

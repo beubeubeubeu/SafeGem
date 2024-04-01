@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 contract UserCollection {
 
   error MustBeOwner();
+  error WithdrawFailed();
   error AlreadyInitialized();
   error CollectionNameEmpty();
   error MarketplaceCheckFailed();
@@ -19,6 +20,9 @@ contract UserCollection {
   address public owner;
   uint public initializationTS;
   string public collectionName;
+
+  event CollectionNameChanged(string _collectionName);
+  event FundsWithdrawed(address indexed _withdrawer, uint _amount);
 
   modifier onlyOwner() {
     if(msg.sender != owner) {
@@ -59,6 +63,7 @@ contract UserCollection {
       revert CollectionNameEmpty();
     }
     collectionName = _collectionName;
+    emit CollectionNameChanged(_collectionName);
   }
 
   function approveBuyer(address _to, uint _ticketId) external onlyTicketForSale(_ticketId) {
@@ -73,8 +78,12 @@ contract UserCollection {
    * @dev The owner should be able to withdraw Eth.
    */
   function withdraw() external onlyOwner {
-    require(msg.sender == owner, "Not the owner");
-    payable(msg.sender).transfer(address(this).balance);
+    uint amount = address(this).balance;
+    (bool received,) = msg.sender.call{ value: amount }('');
+    if(!received) {
+      revert WithdrawFailed();
+    }
+    emit FundsWithdrawed(msg.sender, amount);
   }
 
   /**

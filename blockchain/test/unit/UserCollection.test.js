@@ -14,7 +14,7 @@ describe("UserCollection.sol tests", function () {
     });
 
     describe('Effects', function () {
-      it('Should grant role OWNER to address passed in argument', async function () {
+      it('Should set address passed in argument as owner', async function () {
         const { userCollection, owner } = await loadFixture(initializedUserCollectionFixture);
         expect(await userCollection.owner()).to.equal(owner.address);
       });
@@ -56,6 +56,25 @@ describe("UserCollection.sol tests", function () {
         await userCollection.setCollectionName(newName);
         expect(await userCollection.collectionName()).to.equal(newName);
       });
+    });
+  });
+
+  describe('Function: withdraw', function () {
+    describe('Checks', function () {
+      it('Should revert if called by non owner', async function () {
+        const { userCollection, sgnr1 } = await loadFixture(initializedUserCollectionFixture);
+        await expect(userCollection.connect(sgnr1).withdraw()).to.be.revertedWithCustomError(userCollection, "MustBeOwner");
+      });
+    });
+
+    describe('Effects', function () {
+      it('Should send funds to owner', async function () {
+        const { userCollection, userCollectionAddress, owner } = await loadFixture(initializedUserCollectionFixture);
+        const amount = ethers.parseEther("1.0");
+        await owner.sendTransaction({ to: userCollectionAddress, value: ethers.parseEther("1") })
+        expect(await ethers.provider.getBalance(userCollectionAddress)).to.equal(ethers.parseEther("1"));
+        await expect(userCollection.connect(owner).withdraw()).to.changeEtherBalance(owner, amount);
+      })
     });
   });
 

@@ -5,11 +5,24 @@ const { mintedTicketFixture, ticketToBuyFixture, ticketBoughtFixture } = require
 
 describe("Marketplace.sol tests", function () {
 
+
+  describe('Contract deployment', function() {
+    it('Should revert if zero address is given', async function () {
+      const Marketplace = await ethers.getContractFactory('Marketplace');
+      await expect(Marketplace.deploy(ethers.ZeroAddress)).to.be.revertedWithCustomError(Marketplace, 'MP_InvalidImplementationAddress');
+    });
+  });
+
   describe('Function: setTicketOnSale', function () {
     describe('Checks', function () {
       it('Should revert if called by non collection owner', async function () {
         const { marketplace, sgnr1, ticketId } = await loadFixture(mintedTicketFixture);
         await expect(marketplace.connect(sgnr1).setTicketOnSale(ticketId, true)).to.be.revertedWithCustomError(marketplace, "MP_MustBeCollectionOwner");
+      });
+
+      it('Should revert if ticket is currently beeing sold', async function () {
+        const { marketplace, sgnr1, ticketId } = await loadFixture(ticketBoughtFixture);
+        await expect(marketplace.setTicketOnSale(ticketId, true)).to.be.revertedWithCustomError(marketplace, "TicketAlreadySold");
       });
     });
 
