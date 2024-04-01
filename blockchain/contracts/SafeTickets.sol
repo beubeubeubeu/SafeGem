@@ -2,7 +2,8 @@
 
 pragma solidity ^0.8.25;
 
-import "@openzeppelin/contracts/access/IAccessControl.sol";
+import { UserCollection } from "./UserCollection.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract SafeTickets is ERC721URIStorage {
@@ -33,15 +34,15 @@ contract SafeTickets is ERC721URIStorage {
     external
     onlyCollectionOwner(_collection) returns (uint256)
   {
-    uint256 TicketId = _nextTicketId++;
-    _mint(_collection, TicketId);
-    _setTokenURI(TicketId, _ticketURI);
-    return TicketId;
+    uint256 ticketId = _nextTicketId++;
+    _mint(_collection, ticketId);
+    _setTokenURI(ticketId, _ticketURI);
+    return ticketId;
   }
 
   function isCollectionOwner(address collection)
     private view returns (bool)
   {
-    return IAccessControl(collection).hasRole(keccak256("OWNER"), msg.sender);
+    return UserCollection(payable(collection)).owner() == msg.sender;
   }
 }

@@ -3,7 +3,7 @@
 pragma solidity ^0.8.25;
 
 import { SafeTickets } from "./SafeTickets.sol";
-import "@openzeppelin/contracts/access/IAccessControl.sol";
+import { UserCollection } from "./UserCollection.sol";
 
 contract Marketplace {
 
@@ -11,11 +11,12 @@ contract Marketplace {
   error TicketNotForSale();
   error NotEnoughFundsProvided();
   error NotEnoughFundsOnBalance();
-  error MP_MustBeCollectionOwner();
   error MP_InvalidImplementationAddress();
+  error MP_MustBeCollectionOwner(string _msg);
 
   struct sellingInfo {
     bool onSale;
+    bool selling;
     uint price;
   }
 
@@ -23,6 +24,12 @@ contract Marketplace {
 
   mapping (uint ticketId => sellingInfo) public ticketSelling;
   mapping (address => uint) balances;
+
+  event TicketPriceChanged(uint indexed _ticketId, uint _price);
+  event TicketOnSaleChanged(uint indexed _ticketId, bool _onSale);
+  event FundsWithdrawed(address indexed _withdrawer, uint _amount);
+  event TicketBought(uint indexed _ticketId, address _buyer, uint _price);
+  event TicketTransferred(uint indexed _ticketId, address _seller, address _buyer);
 
   constructor(address _safeTickets) {
     if (_safeTickets == address(0)) {
@@ -32,7 +39,7 @@ contract Marketplace {
   }
 
   modifier onlyTicketForSale(uint _ticketId) {
-    if(!ticketSelling[_ticketId].onSale) {
+    if(!isTicketForSale(_ticketId)) {
       revert TicketNotForSale();
     }
     _;
@@ -40,31 +47,21 @@ contract Marketplace {
 
   modifier onlyCollectionOwner(uint _ticketId) {
     if(!isCollectionOwner(_ticketId)) {
-      revert MP_MustBeCollectionOwner();
+      revert MP_MustBeCollectionOwner("Ticket must be in collection and collection must be owned by msg.sender");
     }
     _;
   }
 
   /**
-   * @dev Sets a ticket on sale.
+   * @dev Sets a ticket on sale true/false.
    *
    */
-  function setTicketOnSale(uint _ticketId)
+  function setTicketOnSale(uint _ticketId, bool _onSale)
     external
     onlyCollectionOwner(_ticketId)
   {
-    ticketSelling[_ticketId].onSale = true;
-  }
-
-  /**
-   * @dev Sets a ticket off sale.
-   *
-   */
-  function setTicketOffSale(uint _ticketId)
-    external
-    onlyCollectionOwner(_ticketId)
-  {
-    ticketSelling[_ticketId].onSale = false;
+    ticketSelling[_ticketId].onSale = _onSale;
+    emit TicketOnSaleChanged(_ticketId, _onSale);
   }
 
   /**
@@ -73,17 +70,21 @@ contract Marketplace {
    */
   function setTicketPrice(uint _ticketId, uint _priceInWei)
     external
-    onlyTicketForSale(_ticketId)
     onlyCollectionOwner(_ticketId)
+    onlyTicketForSale(_ticketId)
   {
     ticketSelling[_ticketId].price = _priceInWei;
+    emit TicketPriceChanged(_ticketId, _priceInWei);
   }
 
   /**
    * @dev Buys a ticket.
    * Sets approval for msg sender to transfer
    * ticket calling OpenZeppelin ERC721 approve
-   * method.
+   * method. Also augment sellers balance.
+   * Also sets "selling" true so that nobody
+   * else can get approved
+   *
    *
    */
   function buyTicket(uint _ticketId)
@@ -95,8 +96,12 @@ contract Marketplace {
       revert NotEnoughFundsProvided();
     }
     SafeTickets safeTicketsInstance = SafeTickets(safeTickets);
-    safeTicketsInstance.approve(msg.sender, _ticketId);
-    balances[msg.sender] += msg.value;
+    UserCollection userCollectionInstance = UserCollection(payable(safeTicketsInstance.ownerOf(_ticketId)));
+    userCollectionInstance.approveBuyer(msg.sender, _ticketId);
+    address formerWalletOwner = userCollectionInstance.owner();
+    balances[formerWalletOwner] += msg.value;
+    ticketSelling[_ticketId].selling = true;
+    emit TicketBought(_ticketId, msg.sender, msg.value);
   }
 
   /**
@@ -128,6 +133,7 @@ contract Marketplace {
     if(!received) {
         revert WithdrawFailed();
     }
+    emit FundsWithdrawed(msg.sender, _amount);
   }
 
   /**
@@ -137,9 +143,13 @@ contract Marketplace {
     return balances[_user];
   }
 
-  function isCollectionOwner(uint ticketId) private view returns (bool) {
+  function isCollectionOwner(uint _ticketId) private view returns (bool) {
     SafeTickets safeTicketsInstance = SafeTickets(safeTickets);
-    address ticketCollection = safeTicketsInstance.ownerOf(ticketId);
-    return IAccessControl(ticketCollection).hasRole(keccak256("OWNER"), msg.sender);
+    address ticketCollection = safeTicketsInstance.ownerOf(_ticketId);
+    return UserCollection(payable(ticketCollection)).owner() == msg.sender;
+  }
+
+  function isTicketForSale(uint _ticketId) public view returns (bool) {
+    return (ticketSelling[_ticketId].onSale && !ticketSelling[_ticketId].selling);
   }
 }

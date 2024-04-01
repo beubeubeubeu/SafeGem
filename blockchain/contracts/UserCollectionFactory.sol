@@ -10,6 +10,8 @@ contract UserCollectionFactory {
   error UCF_InvalidImplementationAddress();
 
   address immutable userCollection;
+  address immutable safeTickets;
+  address immutable marketplace;
 
   event UserCollectionCreated(
     address _userAddress,
@@ -17,11 +19,13 @@ contract UserCollectionFactory {
     uint _timestamp
   );
 
-  constructor(address _userCollection) {
-    if (_userCollection == address(0)) {
+  constructor(address _userCollection, address _safeTickets, address _marketplace) {
+    if (_userCollection == address(0) || _safeTickets == address(0) || _marketplace == address(0)) {
       revert UCF_InvalidImplementationAddress();
     }
     userCollection = _userCollection;
+    safeTickets = _safeTickets;
+    marketplace = _marketplace;
   }
 
   /**
@@ -29,7 +33,7 @@ contract UserCollectionFactory {
   */
   function createNFTCollection(string memory _collectionName) external {
     address newCollectionAddress = Clones.clone(userCollection);
-    UserCollection(newCollectionAddress).initialize(_collectionName, msg.sender);
+    UserCollection(payable(newCollectionAddress)).initialize(_collectionName, msg.sender, safeTickets, marketplace);
     emit UserCollectionCreated(msg.sender, newCollectionAddress, block.timestamp);
   }
 }

@@ -19,21 +19,6 @@ async function main() {
     await verify(userCollectionAddress);
   }
 
-  // **** Deploy user collection factory to clone the implementation (calling function createNFTCollection)
-  const userCollectionFactory = await hre.ethers.deployContract("UserCollectionFactory", [userCollectionAddress]);
-  await userCollectionFactory.deploymentTransaction().wait(network.config.blockConfirmations || 1);
-  const userCollectionFactoryAddress = userCollectionFactory.target;
-
-  console.log(
-    `UserCollectionFactory deployed to: ${userCollectionFactoryAddress}`
-  );
-
-  // **************************************** Verify UserCollectionFactory on Etherscan
-  if(!network.name.includes('localhost') && process.env.ETHERSCAN_API_KEY) {
-    console.log('Veryfiying contract UserCollectionFactory on Etherscan...');
-    await verify(userCollectionFactoryAddress, [userCollectionAddress]);
-  }
-
   // **** Deploy SafeTickets
   const safeTickets = await hre.ethers.deployContract("SafeTickets");
   await safeTickets.deploymentTransaction().wait(network.config.blockConfirmations || 1);
@@ -62,6 +47,21 @@ async function main() {
   if(!network.name.includes('localhost') && process.env.ETHERSCAN_API_KEY) {
     console.log('Veryfiying Marketplace contract on Etherscan...');
     await verify(marketplaceAddress, [safeTicketsAddress]);
+  }
+
+  // **** Deploy user collection factory to clone the implementation (calling function createNFTCollection)
+  const userCollectionFactory = await hre.ethers.deployContract("UserCollectionFactory", [userCollectionAddress, safeTicketsAddress, marketplaceAddress]);
+  await userCollectionFactory.deploymentTransaction().wait(network.config.blockConfirmations || 1);
+  const userCollectionFactoryAddress = userCollectionFactory.target;
+
+  console.log(
+    `UserCollectionFactory deployed to: ${userCollectionFactoryAddress}`
+  );
+
+  // **************************************** Verify UserCollectionFactory on Etherscan
+  if(!network.name.includes('localhost') && process.env.ETHERSCAN_API_KEY) {
+    console.log('Veryfiying contract UserCollectionFactory on Etherscan...');
+    await verify(userCollectionFactoryAddress, [userCollectionAddress, safeTicketsAddress, marketplaceAddress]);
   }
 }
 

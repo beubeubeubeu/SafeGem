@@ -1,20 +1,43 @@
 const { ethers } = require('hardhat');
 const { loadFixture } = require('@nomicfoundation/hardhat-toolbox/network-helpers');
 
-async function deployedContractFixture() {
+// In order "base contracts" are:
+// - UserCollection (original)
+// - SafeTickets
+// - Marketplace
+// - UserCollectionFactory
+async function deployedBaseContractsFixture() {
   const [owner, sgnr1, sgnr2, sgnr3] = await ethers.getSigners();
 
   const UserCollection = await ethers.getContractFactory('UserCollection');
   const userCollection = await UserCollection.deploy();
+  const userCollectionAddress = await userCollection.getAddress();
+
+  const SafeTickets = await ethers.getContractFactory('SafeTickets');
+  const safeTickets = await SafeTickets.deploy();
+  const safeTicketsAddress = await safeTickets.getAddress();
+
+  const Marketplace = await ethers.getContractFactory('Marketplace');
+  const marketplace = await Marketplace.deploy(safeTicketsAddress);
+  const marketplaceAddress = await marketplace.getAddress();
 
   const UserCollectionFactory = await ethers.getContractFactory('UserCollectionFactory');
-  const userCollectionFactory = await UserCollectionFactory.deploy(userCollection);
+  const userCollectionFactory = await UserCollectionFactory.deploy(userCollectionAddress, safeTicketsAddress, marketplaceAddress);
 
-  return { userCollection, userCollectionFactory, owner, sgnr1, sgnr2, sgnr3 };
+  return {
+    userCollection,
+    safeTickets,
+    marketplace,
+    userCollectionFactory,
+    userCollectionAddress,
+    safeTicketsAddress,
+    marketplaceAddress,
+    owner, sgnr1, sgnr2, sgnr3
+  };
 };
 
 async function clonedOneUserCollectionFixture() {
-  const { userCollectionFactory } = await loadFixture(deployedContractFixture);
+  const { userCollectionFactory } = await loadFixture(deployedBaseContractsFixture);
   // Wrap UserCollectionCreated event listening in a promise
   const cloneAddressPromise = new Promise((resolve) => {
     userCollectionFactory.on("UserCollectionCreated", (_userAddress, _newCollectionAddress, _timestamp, event) => {
@@ -36,25 +59,21 @@ async function clonedOneUserCollectionFixture() {
 };
 
 async function initializedUserCollectionFixture() {
-  const { userCollection, owner, sgnr1 } = await loadFixture(deployedContractFixture);
-  await userCollection.initialize("First initialization", owner.address);
-  return { userCollection, owner, sgnr1 };
+  const { safeTickets, marketplace, safeTicketsAddress, marketplaceAddress, userCollectionAddress, userCollection, owner, sgnr1 } = await loadFixture(deployedBaseContractsFixture);
+  await userCollection.initialize("First initialization", owner.address, safeTicketsAddress, marketplaceAddress);
+  return { safeTickets, marketplace, userCollection, safeTicketsAddress, marketplaceAddress, userCollectionAddress, owner, sgnr1 };
 }
 
-async function safeTicketFixture() {
-  const { userCollection, owner, sgnr1 } = await loadFixture(initializedUserCollectionFixture);
-  const SafeTicket = await ethers.getContractFactory('SafeTickets');
-  const safeTicket = await SafeTicket.deploy();
-  const userCollectionAddress = await userCollection.getAddress();
-  const ticketURI = "https://example.com/ticket";
-  return { safeTicket, userCollectionAddress, ticketURI, owner, sgnr1 };
-}
-
+async function safeTicketsFixture() {
+  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1 } = await loadFixture(initializedUserCollectionFixture);
+  ticketURI = "https://example.com/ticket";
+  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI };
+};
 async function mintedTicketFixture() {
-  const { safeTicket, userCollectionAddress, ticketURI } = await loadFixture(safeTicketFixture);
+  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI  } = await loadFixture(safeTicketsFixture);
   // Wrap Transfer event listening in a promise
   const mintedTicketPromise = new Promise((resolve) => {
-    safeTicket.on("Transfer", (from, to, ticketId, event) => {
+    safeTickets.on("Transfer", (from, to, ticketId, event) => {
       console.log("Minted ticket from", from);
       console.log("Minted ticket to", to);
       console.log("Minted ticket id ", ticketId);
@@ -63,18 +82,24 @@ async function mintedTicketFixture() {
     });
   })
 
-  const tx = await safeTicket.mintTicket(userCollectionAddress, ticketURI);
+  const tx = await safeTickets.mintTicket(userCollectionAddress, ticketURI);
   await tx.wait();
 
   // Wait for the promise to resolve with the token Id
   const ticketId = await mintedTicketPromise;
-  return { safeTicket, userCollectionAddress, ticketURI, ticketId };
+  return { safeTickets, marketplace, userCollectionAddress, ticketURI, ticketId, owner, sgnr1 };
 };
 
+async function marketplaceFixture() {
+  const { safeTickets, marketplace, userCollectionAddress, ticketURI, ticketId, owner, sgnr1 } = await loadFixture(mintedTicketFixture);
+  return { marketplace, safeTickets, userCollectionAddress, ticketURI, ticketId, owner, sgnr1 };
+}
+
 module.exports = {
-  deployedContractFixture,
+  deployedBaseContractsFixture,
+  safeTicketsFixture,
   clonedOneUserCollectionFixture,
   initializedUserCollectionFixture,
-  safeTicketFixture,
-  mintedTicketFixture
+  mintedTicketFixture,
+  marketplaceFixture
 };
