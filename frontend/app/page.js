@@ -1,15 +1,16 @@
-  import Layout from './components/layout/Layout';
-import { Heading, Box, Text } from '@chakra-ui/react';
+import Link from 'next/link';
+import { Heading, Box, Text, Button } from '@chakra-ui/react';
 
 const Home = () => {
   return (
     <>
-      <Layout>
-        <Box textAlign={'center'}>
-          <Heading as='h1' size='4xl'>Safe Tickets</Heading>
-          <Text mt={"12px"} fontSize={'xl'}>Your tickets in NFT collections</Text>
-        </Box>
-      </Layout>
+      <Box textAlign={'center'} mt={48}>
+        <Heading as='h1' size='4xl'>Your tickets into NFT collections</Heading>
+        <Link href='/collections'>
+          <Button colorScheme='teal' size={'lg'} mt={'48px'}>Start Collecting Now</Button>
+          <Text mt={'24px'}>🎟️ 🎫 🧾</Text>
+        </Link>
+      </Box>
     </>
   );
 };
