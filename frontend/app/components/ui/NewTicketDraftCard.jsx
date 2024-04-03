@@ -28,7 +28,8 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
 
   const [canCreateDraftTicket, setCanCreateDraftTicket] = useState(false);
 
-  const [cid, setCid] = useState("");
+  const [cidFile, setCidFile] = useState("");
+  const [cidJSON, setCidJSON] = useState("");
 
   // Initialize the ticketMetadata state with default values
   const [ticketMetadata, setTicketMetadata] = useState({
@@ -72,15 +73,16 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
     });
   };
 
-  // Pinata file upload
+  // Pinata file and JSON upload
   const [file, setFile] = useState("");
-  const [uploading, setUploading] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [uploadingJSON, setUploadingJSON] = useState(false);
 
   const inputFile = useRef(null);
 
   const uploadFile = async (fileToUpload) => {
     try {
-      setUploading(true);
+      setUploadingFile(true);
       const data = new FormData();
       data.set("file", fileToUpload);
       const res = await fetch("/api/files", {
@@ -88,12 +90,12 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
         body: data,
       });
       const resData = await res.json();
-      setCid(resData.IpfsHash);
+      setCidFile(resData.IpfsHash);
       updateTicketMetadata('image', `ipfs://${resData.IpfsHash}`);
-      setUploading(false);
+      setUploadingFile(false);
     } catch (e) {
       console.log(e);
-      setUploading(false);
+      setUploadingFile(false);
       alert("Trouble uploading file");
     }
   };
@@ -103,9 +105,32 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
     uploadFile(e.target.files[0]);
   };
 
-  // Créer un nouveau ticket URI avec Pinata
+  const uploadJSON = async () => {
+    try {
+      setUploadingJSON(true);
+      const res = await fetch("/api/json", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ticketMetadata),
+      });
+      const resData = await res.json();
+      setCidJSON(resData.IpfsHash);
+      setUploadingJSON(false);
+      handleCreateTicketDraft();
+    } catch (e) {
+      console.log(e);
+      setUploadingJSON(false);
+      alert("Trouble uploading json");
+    }
+  }
+
+  // Create a new draft ticket
   const handleCreateTicketDraft = async () => {
-    console.log("TicketMetadata: ", ticketMetadata)
+    // create draft ticket in local storage to show it as draft ticket
+    // call onSuccessCreateDraftTicket callback that should reload NFT items
+    // reset variables
   }
 
   const checkCanCreateDraftTicket = () => {
@@ -152,13 +177,13 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
           <FormControl p="12">
             <FormLabel>Ticket image</FormLabel>
             <input type="file" id="file" ref={inputFile} onChange={handleUploadFileInputChange} />
-            <button disabled={uploading} onClick={() => inputFile.current.click()}>
-              {uploading && "Uploading..."}
+            <button disabled={uploadingFile} onClick={() => inputFile.current.click()}>
+              {uploadingFile && "Uploading..."}
             </button>
             <FormHelperText>jpg, png, pdf</FormHelperText>
-            {cid && (
+            {cidFile && (
               <img
-                src={`${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${cid}`}
+                src={`${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${cidFile}`}
                 alt="Image from IPFS"
               />
             )}
@@ -190,7 +215,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
             minHeight="24px"
             bgColor={canCreateDraftTicket ? "teal.200" : "gray.200"} // Change background color if not clickable
             color={canCreateDraftTicket ? "grey.500" : "gray.500"} // Change text color if not clickable
-            onClick={canCreateDraftTicket ? handleCreateTicketDraft : undefined} // Only pass the onClick handler if canCreateDraftTicket is true
+            onClick={canCreateDraftTicket ? uploadJSON : undefined} // Only pass the onClick handler if canCreateDraftTicket is true
             p="5"
             fontWeight={200}
             fontFamily={"heading"}

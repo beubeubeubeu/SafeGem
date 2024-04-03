@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { generateRandomId } from "@/lib/helpers";
 
 export const config = {
   api: {
@@ -9,9 +10,8 @@ export const config = {
 export async function POST(request) {
   try {
     const data = await request.formData();
-    const file = data.get("file");
-    data.append("file", file);
-    data.append("pinataMetadata", JSON.stringify({ name: "File to upload" }));
+    const randomId = generateRandomId(5);
+    data.append("pinataMetadata", JSON.stringify({ name: `SafeTicket file ${randomId}` }));
     const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
       method: "POST",
       headers: {
