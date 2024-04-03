@@ -114,7 +114,7 @@ const NewCollectionCard = ({onSuccessCreateCollection}) => {
               borderRadius="0"
               value="ERC-721"
             />
-            <FormLabel mt="4">Network</FormLabel>
+            <FormLabel mt="4">Blockchain</FormLabel>
             <Input
               disabled
               borderRadius="0"
