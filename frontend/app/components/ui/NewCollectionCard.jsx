@@ -31,7 +31,7 @@ const NewCollectionCard = ({onSuccessCreateCollection}) => {
 
   const toast = useToast();
 
-  // Écrire une nouvelle proposition
+  // Créer une nouvelle collection
   const { writeContract: createCollection, isLoading: isCreatingCollection } = useWriteContract({
     mutation: {
       onSuccess() {

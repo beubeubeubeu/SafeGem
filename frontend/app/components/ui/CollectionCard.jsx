@@ -4,15 +4,7 @@ import { Box, Flex, Text, VStack, Divider, Badge } from '@chakra-ui/react';
 
 const CollectionCard = ({ name, shortAddress, address }) => {
   return (
-    // <Link
-    //   href={{
-    //     pathname: '/collection',
-    //     query: {
-    //       address: address
-    //     }
-    //   }}
-    // >
-    <Link href={`/collection/${address}`}>
+    <Link href={`/collection/${address}?name=${name}`}>
       <Box
         as="button"
         width="400px" // Same width as the "create collection" card
