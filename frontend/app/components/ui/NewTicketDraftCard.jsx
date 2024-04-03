@@ -37,6 +37,10 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
     attributes: [
       { value: '' },
       {
+        trait_type: 'Venue',
+        value: ''
+      },
+      {
         trait_type: 'Concert date',
         display_type: 'date',
         value: Date.now()
@@ -60,12 +64,14 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
         return { ...prevMetadata, image: value };
       } else if (type === 'name') {
         newAttributes[0].value = value;
+      } else if (type === 'venue') {
+        newAttributes[1].value = value;
       } else if (type === 'date') {
         // Ensure the date is stored in ISO format or as a timestamp
         const dateValue = new Date(value).getTime();
-        newAttributes[1].value = dateValue;
+        newAttributes[2].value = dateValue;
       } else if (type === 'category') {
-        newAttributes[2].value = value;
+        newAttributes[3].value = value;
       }
       checkCanCreateDraftTicket();
       // Return the new state with updated attributes
@@ -116,7 +122,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
         body: JSON.stringify(ticketMetadata),
       });
       const resData = await res.json();
-      setCidJSON(resData.IpfsHash);
+      setCidJSON(resData.res.IpfsHash);
       setUploadingJSON(false);
       handleCreateTicketDraft();
     } catch (e) {
@@ -128,19 +134,68 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
 
   // Create a new draft ticket
   const handleCreateTicketDraft = async () => {
-    // create draft ticket in local storage to show it as draft ticket
-    // call onSuccessCreateDraftTicket callback that should reload NFT items
-    // reset variables
-  }
+    let existingDrafts;
+    try {
+      // Attempt to parse the existing drafts from localStorage
+      existingDrafts = JSON.parse(localStorage.getItem('ticketDrafts')) || [];
+    } catch (e) {
+      // If an error occurs, default to an empty array
+      existingDrafts = [];
+    }
+    const ticketDraft = {
+      cidJSON: cidJSON,
+      imageUrl: `${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${cidFile}`,
+      concertName: ticketMetadata.attributes[0].value,
+      venue: ticketMetadata.attributes[1].value,
+      date: ticketMetadata.attributes[2].value,
+      category: ticketMetadata.attributes[3].value,
+      draft: true,
+      tokenId: null
+    }
+    existingDrafts.push(ticketDraft);
+    localStorage.setItem('ticketDrafts', JSON.stringify(existingDrafts));
+    toast({
+      title: "Draft created. Go mint !",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+    onSuccessCreateDraftTicket();
+    setTicketMetadata({
+      image: '',
+      attributes: [
+        { value: '' },
+        {
+          trait_type: 'Venue',
+          value: ''
+        },
+        {
+          trait_type: 'Concert date',
+          display_type: 'date',
+          value: Date.now()
+        },
+        {
+          trait_type: 'Ticket category',
+          value: 'Floor',
+        },
+      ],
+    });
+    setFile("");
+    setCidFile("");
+    setCidJSON("");
+    setCanCreateDraftTicket(false);
+    onClose();
+  };
 
   const checkCanCreateDraftTicket = () => {
     setCanCreateDraftTicket(
       ticketMetadata.image !== '' &&
       ticketMetadata.attributes[0].value !== '' &&
       ticketMetadata.attributes[1].value !== '' &&
-      ticketMetadata.attributes[2].value !== ''
+      ticketMetadata.attributes[2].value !== '' &&
+      ticketMetadata.attributes[3].value !== ''
     );
-  }
+  };
 
   return (
     <>
@@ -149,9 +204,8 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        // minHeight="161px" // Minimum height of the card
-        h="324px" // Height of the card
-        w="250px" // Width of the card
+        h="472px" // Height of the card
+        w="285px" // Width of the card
         bg="whiteAlpha.900" // Background color
         color="gray.600" // Text color
         borderWidth="2px"
@@ -193,17 +247,23 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
               value={ticketMetadata.attributes[0].value}
               onChange={(e) => updateTicketMetadata('name', e.target.value)}
             />
+            <FormLabel mt="4">Venue</FormLabel>
+            <Input
+              borderRadius="0"
+              value={ticketMetadata.attributes[1].value}
+              onChange={(e) => updateTicketMetadata('venue', e.target.value)}
+            />
             <FormLabel mt="4">Concert date</FormLabel>
             <Input
               type="date"
               borderRadius="0"
-              value={new Date(ticketMetadata.attributes[1].value).toISOString().split('T')[0]}
+              value={new Date(ticketMetadata.attributes[2].value).toISOString().split('T')[0]}
               onChange={(e) => updateTicketMetadata('date', e.target.value)}
             />
             <FormLabel mt="4">Ticket category</FormLabel>
             <Select
               borderRadius="0"
-              value={ticketMetadata.attributes[2].value}
+              value={ticketMetadata.attributes[3].value}
               onChange={(e) => updateTicketMetadata('category', e.target.value)}
             >
               <option value="Floor">Floor</option>
