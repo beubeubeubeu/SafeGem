@@ -7,7 +7,7 @@ const Layout = ({ children }) => {
   return (
     <Flex
       px={{ base: 0, md: '12px', lg: '64px', xl: '256px' }}
-      backgroundColor="blue.100"
+      backgroundColor="gray.50"
       direction="column"
       minH="100vh"
       py="2rem"

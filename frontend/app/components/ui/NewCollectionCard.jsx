@@ -74,13 +74,13 @@ const NewCollectionCard = ({onSuccessCreateCollection}) => {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        minHeight="158px" // Minimum height of the card
+        minHeight="161px" // Minimum height of the card
         h="100px" // Height of the card
         w="400px" // Width of the card
         bg="whiteAlpha.900" // Background color
         color="gray.600" // Text color
         borderWidth="2px"
-        borderColor="gray.200"
+        borderColor="teal.200"
         borderRadius="md"
         boxShadow="md"
         transition="background-color 0.2s, color 0.2s"
@@ -123,7 +123,7 @@ const NewCollectionCard = ({onSuccessCreateCollection}) => {
           </FormControl>
           <Box
             minHeight="24px"
-            bgColor="green.200"
+            bgColor="teal.200"
             color="grey.500"
             onClick={handleCreateCollection}
             p="5"
@@ -136,7 +136,7 @@ const NewCollectionCard = ({onSuccessCreateCollection}) => {
             cursor="pointer" // Change cursor to pointer
             transition="background-color 0.2s, color 0.2s" // Smooth transition for hover effect
             _hover={{
-              bgColor: "green.300", // Darker green on hover
+              bgColor: "teal.300", // Darker green on hover
               color: "whiteAlpha.900" // Lighter white text on hover
             }}
           >

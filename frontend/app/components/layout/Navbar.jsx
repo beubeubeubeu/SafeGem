@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useAccount } from 'wagmi';
+import { usePathname } from 'next/navigation'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import {
   Box,
@@ -35,7 +36,7 @@ export default function Navbar() {
         px={{ base: 4 }}
         borderBottom={1}
         borderStyle={'solid'}
-        borderColor={useColorModeValue('gray.200', 'gray.900')}
+        borderColor={useColorModeValue('teal.200', 'teal.900')}
         pb={'24px'}
         mb={8}
         align={'center'}>
@@ -91,8 +92,11 @@ export default function Navbar() {
 }
 
 const DesktopNav = () => {
+
+  const pathname = usePathname()
+
   const linkColor = useColorModeValue('gray.600', 'gray.200')
-  const linkHoverColor = useColorModeValue('gray.800', 'white')
+  const linkHoverColor = 'teal.500'
 
   return (
     <Stack direction={'row'} spacing={6} mr={20}>
@@ -104,9 +108,10 @@ const DesktopNav = () => {
           alignContent={'center'}
           href={navItem.href ?? '#'}
           fontSize={'md'}
-          fontWeight={500}
-          color={linkColor}
+          fontWeight={pathname === navItem.href ? 600 : 400 }
+          color={pathname === navItem.href ? 'teal.500' : linkColor}
           _hover={{
+            fontWeight: 600,
             textDecoration: 'none',
             color: linkHoverColor,
           }}>

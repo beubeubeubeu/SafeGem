@@ -27,7 +27,8 @@ const Collections = () => {
       .map(async event => {
         tmpUserCollections.push({
           name: event.args._collectionName,
-          address: `${event.args._newCollectionAddress.substring(0, 12)}...${event.args._newCollectionAddress.substring(event.args._newCollectionAddress.length - 12)}`
+          address: event.args._newCollectionAddress,
+          shortAddress: `${event.args._newCollectionAddress.substring(0, 12)}...${event.args._newCollectionAddress.substring(event.args._newCollectionAddress.length - 12)}`
         })
       })
     setUserCollections(tmpUserCollections);
@@ -61,8 +62,9 @@ const Collections = () => {
           {userCollections.map((collection, index) => (
             <GridItem key={index}>
               <CollectionCard
-                name={collection.name} // Replace with actual property name
-                address={collection.address} // Replace with actual property address
+                name={collection.name}
+                shortAddress={collection.shortAddress}
+                address={collection.address}
               />
             </GridItem>
           ))}
