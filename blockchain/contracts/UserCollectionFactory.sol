@@ -16,6 +16,7 @@ contract UserCollectionFactory {
   event UserCollectionCreated(
     address _userAddress,
     address _newCollectionAddress,
+    string _collectionName,
     uint _timestamp
   );
 
@@ -34,6 +35,6 @@ contract UserCollectionFactory {
   function createNFTCollection(string memory _collectionName) external {
     address newCollectionAddress = Clones.clone(userCollection);
     UserCollection(payable(newCollectionAddress)).initialize(_collectionName, msg.sender, safeTickets, marketplace);
-    emit UserCollectionCreated(msg.sender, newCollectionAddress, block.timestamp);
+    emit UserCollectionCreated(msg.sender, newCollectionAddress, _collectionName, block.timestamp);
   }
 }

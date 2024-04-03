@@ -1042,12 +1042,6 @@ export const userCollectionFactoryAbi = [
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "_collectionName",
-        "type": "string"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
         "name": "_timestamp",
         "type": "uint256"
@@ -1070,3 +1064,8 @@ export const userCollectionFactoryAbi = [
     "type": "function"
   }
 ];
+
+export const userCollectionAddress = process.env.NEXT_PUBLIC_USER_COLLECTION_CONTRACT_ADDRESS;
+export const safeTicketsAddress = process.env.NEXT_PUBLIC_SAFE_TICKETS_CONTRACT_ADDRESS;
+export const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS;
+export const userCollectionFactoryAddress = process.env.NEXT_PUBLIC_USER_COLLECTION_FACTORY_CONTRACT_ADDRESS;

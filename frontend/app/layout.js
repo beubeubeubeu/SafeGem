@@ -13,14 +13,9 @@ export default function RootLayout({ children }) {
       <link rel="icon" href="/favicon.ico" sizes="32x32" />
       <body>
         <Providers>
-          <Flex
-            direction="column"
-            minH="100vh"
-          >
-            <Layout>
-              {children}
-            </Layout>
-          </Flex>
+          <Layout>
+            {children}
+          </Layout>
         </Providers>
       </body>
     </html>

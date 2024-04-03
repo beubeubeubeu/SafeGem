@@ -40,9 +40,10 @@ async function clonedOneUserCollectionFixture() {
   const { userCollectionFactory } = await loadFixture(deployedBaseContractsFixture);
   // Wrap UserCollectionCreated event listening in a promise
   const cloneAddressPromise = new Promise((resolve) => {
-    userCollectionFactory.on("UserCollectionCreated", (_userAddress, _newCollectionAddress, _timestamp, event) => {
+    userCollectionFactory.on("UserCollectionCreated", (_userAddress, _newCollectionAddress, _collectionName, _timestamp, event) => {
       console.log("New clone user address is", _userAddress);
       console.log("New clone collection address is", _newCollectionAddress);
+      console.log("New clone collection name is", _collectionName);
       console.log("New clone collection deployed at block timestamp", _timestamp);
       event.removeListener();
       resolve(_newCollectionAddress); // Resolve the promise with the address

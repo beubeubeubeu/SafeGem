@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "paths": {
+      "@/*": ["./*"]
+       // "@/constants/*": ["./constants/*"]
+    },
     "lib": [
       "dom",
       "dom.iterable",

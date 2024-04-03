@@ -25,7 +25,7 @@ describe("UserCollectionFactory.sol tests", function () {
 		describe('Interactions', function () {
       it('Should emit an event upon success', async function () {
         const { userCollectionFactory, owner } = await loadFixture(deployedBaseContractsFixture);
-				await expect(userCollectionFactory.createNFTCollection("My new collection")).to.emit(userCollectionFactory, "UserCollectionCreated").withArgs(owner.address, anyValue, anyUint);
+				await expect(userCollectionFactory.createNFTCollection("My new collection")).to.emit(userCollectionFactory, "UserCollectionCreated").withArgs(owner.address, anyValue, "My new collection", anyUint);
 			});
     });
   });

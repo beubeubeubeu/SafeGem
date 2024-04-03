@@ -1,1 +1,4 @@
-// export const contractAddress=process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+export const userCollectionAddress = process.env.NEXT_PUBLIC_USER_COLLECTION_CONTRACT_ADDRESS;
+export const safeTicketsAddress = process.env.NEXT_PUBLIC_SAFE_TICKETS_CONTRACT_ADDRESS;
+export const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS;
+export const userCollectionFactoryAddress = process.env.NEXT_PUBLIC_USER_COLLECTION_FACTORY_CONTRACT_ADDRESS;
