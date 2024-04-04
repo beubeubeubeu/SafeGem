@@ -2,7 +2,7 @@
 
 import { useAccount } from 'wagmi';
 import { AddIcon } from '@chakra-ui/icons';
-import { pinataImageUrl } from "@/lib/helpers";
+import { getPinataImageUrl } from "@/lib/helpers";
 import { React, useState, useRef } from 'react';
 import {
   Box,
@@ -112,6 +112,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
   const handleUploadFileInputChange = (e) => {
     setFile(e.target.files[0]);
     uploadFile(e.target.files[0]);
+    checkCanCreateDraftTicket();
   };
 
   const uploadJSON = async () => {
@@ -155,7 +156,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
 
     const ticketDraft = {
       cidJSON: resCidJSON,
-      imageUrl: pinataImageUrl(cidImage),
+      cidImage: cidImage,
       concertName: ticketMetadata.attributes[0].value,
       venue: ticketMetadata.attributes[1].value,
       date: ticketMetadata.attributes[2].value,
@@ -256,7 +257,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
             <FormHelperText>jpg, png, pdf</FormHelperText>
             {cidImage && (
               <img
-                src={pinataImageUrl(cidImage)}
+                src={getPinataImageUrl(cidImage)}
                 alt="Image from IPFS"
               />
             )}

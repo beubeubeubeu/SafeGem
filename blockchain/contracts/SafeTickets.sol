@@ -13,6 +13,7 @@ contract SafeTickets is ERC721URIStorage {
   error ST_MustBeCollectionOwner();
 
   uint private _nextTicketId;
+
   mapping (string => bool) private jsonCids;
   mapping (string => bool) private imageCids;
 
@@ -31,7 +32,8 @@ contract SafeTickets is ERC721URIStorage {
     uint indexed _tokenId,
     address _collection,
     string _imageCid,
-    string _jsonCid
+    string _jsonCid,
+    uint _timestamp
   );
 
   /**
@@ -62,7 +64,7 @@ contract SafeTickets is ERC721URIStorage {
     _setTokenURI(ticketId, concatenateStrings('ipfs://', _jsonCid));
     imageCids[_imageCid] = true;
     jsonCids[_jsonCid] = true;
-    emit TicketMinted(ticketId, _collection, _imageCid, _jsonCid);
+    emit TicketMinted(ticketId, _collection, _imageCid, _jsonCid, block.timestamp);
     return ticketId;
   }
 

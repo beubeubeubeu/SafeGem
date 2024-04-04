@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
 const { safeTicketsFixture, mintedTicketFixture } = require('./Fixtures');
+const { anyUint } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { loadFixture } = require('@nomicfoundation/hardhat-toolbox/network-helpers');
 
 describe("SafeTickets.sol tests", function () {
@@ -47,7 +48,7 @@ describe("SafeTickets.sol tests", function () {
       it('Should emit a TicketMinted event upon success', async function () {
         const { safeTickets, userCollectionAddress, imageCid, jsonCid } = await loadFixture(safeTicketsFixture);
         await expect(safeTickets.mintTicket(userCollectionAddress, imageCid, jsonCid))
-          .to.emit(safeTickets, 'TicketMinted').withArgs(0n, userCollectionAddress, imageCid, jsonCid);
+          .to.emit(safeTickets, 'TicketMinted').withArgs(0n, userCollectionAddress, imageCid, jsonCid, anyUint);
       });
     });
   });

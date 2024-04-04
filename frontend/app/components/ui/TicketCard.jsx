@@ -1,5 +1,6 @@
 import React from 'react';
 import { DeleteIcon } from '@chakra-ui/icons'
+import { getPinataImageUrl } from '@/lib/helpers';
 import { useWriteContract, useAccount } from 'wagmi';
 import {
   safeTicketsAbi,
@@ -15,6 +16,7 @@ import {
   Button,
   Heading,
   Divider,
+  useToast,
   CardBody,
   CardFooter
 } from '@chakra-ui/react';
@@ -22,6 +24,8 @@ import {
 const TicketCard = ({ index, tokenId, cidJSON, cidImage, concertName, category, date, venue, draft, collection, onDeleteItem, onMintedItem }) => {
 
   const { address } = useAccount();
+
+  const toast = useToast();
 
   const borderColor = {
     "Floor": 'gray.200',
@@ -34,7 +38,7 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, concertName, category, 
   };
 
   // Mint a ticket
-  const { writeContract: mintTicket, isLoading: isMinting } = useWriteContract({
+  const { writeContract: mintSafeTicket, isLoading: isMinting } = useWriteContract({
     mutation: {
       onSuccess() {
         toast({
@@ -58,12 +62,12 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, concertName, category, 
   });
 
   const handleMint = () => {
-    mintTicket({
+    mintSafeTicket({
       address: safeTicketsAddress,
       abi: safeTicketsAbi,
       functionName: "mintTicket",
       account: address,
-      args: [collection, cidJSON, cidImage]
+      args: [collection, cidImage, cidJSON]
     });
   };
 
@@ -87,7 +91,7 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, concertName, category, 
           </HStack>
         }
         <Image
-          src={pinataImageUrl(cidImage)}
+          src={getPinataImageUrl(cidImage)}
           alt={`SafeTicket ${tokenId}`}
           borderRadius='sm'
         />

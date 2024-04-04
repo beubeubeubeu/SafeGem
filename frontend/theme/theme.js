@@ -17,7 +17,7 @@ const theme = extendTheme({
   fonts: {
     heading: oswald.style.fontFamily,
     body: inter.style.fontFamily
-  },
+  }
 });
 
 export default theme;

@@ -37,7 +37,12 @@ const Collection = ({ params }) => {
   }
 
   const getTickets = async () => {
-    const tmpTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[collection] || []
+    let tmpTickets;
+    try {
+      tmpTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[collection] || []
+    } catch (e) {
+      tmpTickets = []
+    }
     // const userCollectionCreatedEvents = await publicClient.getLogs({
     //   address: userCollectionFactoryAddress,
     //   event: parseAbiItem('event UserCollectionCreated(address _userAddress, address _newCollectionAddress, string _collectionName, uint _timestamp)'),
@@ -112,7 +117,7 @@ const Collection = ({ params }) => {
               <TicketCard
                 index={index}
                 cidJSON={ticket.cidJSON}
-                imageUrl={ticket.imageUrl}
+                cidImage={ticket.cidImage}
                 concertName={ticket.concertName}
                 venue={ticket.venue}
                 date={ticket.date}

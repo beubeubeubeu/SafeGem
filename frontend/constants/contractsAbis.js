@@ -412,6 +412,16 @@ export const safeTicketsAbi = [
   },
   {
     "inputs": [],
+    "name": "ImageAlreadyMinted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MetadataAlreadyMinted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "ST_MustBeCollectionOwner",
     "type": "error"
   },
@@ -502,6 +512,43 @@ export const safeTicketsAbi = [
     "inputs": [
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_collection",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_imageCid",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_jsonCid",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "TicketMinted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "from",
         "type": "address"
@@ -562,6 +609,30 @@ export const safeTicketsAbi = [
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "a",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "b",
+        "type": "string"
+      }
+    ],
+    "name": "concatenateStrings",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
@@ -611,7 +682,12 @@ export const safeTicketsAbi = [
       },
       {
         "internalType": "string",
-        "name": "_ticketURI",
+        "name": "_imageCid",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_jsonCid",
         "type": "string"
       }
     ],
