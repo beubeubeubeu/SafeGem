@@ -26,13 +26,17 @@ const Collection = ({ params }) => {
 
   const { address } = useAccount();
   const [tickets, setTickets] = useState()
+  const [collection, setCollection] = useState('');
+
+  useEffect(() => {
+    setCollection(params.address);
+  }, [params.address]);
 
   const onSuccessCreateDraftTicket = () => {
     getTickets();
   }
 
   const getTickets = async () => {
-    const collection = params.address
     const tmpTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[collection] || []
     // const userCollectionCreatedEvents = await publicClient.getLogs({
     //   address: userCollectionFactoryAddress,
@@ -54,24 +58,23 @@ const Collection = ({ params }) => {
 
   useEffect(() => {
     const getAllTickets = async () => {
-      if (address !== undefined) {
+      if (address !== undefined && collection !== undefined) {
           await getTickets();
       }
     }
     getAllTickets();
-  }, [address])
+  }, [address, collection])
 
   const handleDelete = async (index) => {
     // Retrieve the current drafts array from local storage and parse it
-    let drafts = JSON.parse(localStorage.getItem('ticketDrafts')) || [];
+    let drafts = JSON.parse(localStorage.getItem('ticketDrafts')) || {};
     // Remove the item at the specified index
-    if (index >= 0 && index < drafts.length) {
-      drafts.splice(index, 1);
+    if (index >= 0 && index < drafts[collection].length) {
+      drafts[collection].splice(index, 1);
       // Update local storage with the new array
       localStorage.setItem('ticketDrafts', JSON.stringify(drafts));
     }
     getTickets();
-    console.log(index);
   }
 
   return (
