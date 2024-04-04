@@ -71,7 +71,7 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, draft, collection, onDe
   };
 
   // Mint a ticket
-  const { writeContract: mintSafeTicket, isLoading: isMinting } = useWriteContract({
+  const { writeContract: mintSafeTicket, isPending: isPendingMinting, isLoading: isMinting } = useWriteContract({
     mutation: {
       onSuccess() {
         toast({
@@ -160,7 +160,7 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, draft, collection, onDe
       <Divider />
       <CardFooter justify="center">
         { draft ? (
-          <Button variant='solid' colorScheme='teal' onClick={handleMint}>
+          <Button isLoading={isMinting || isPendingMinting} variant='solid' colorScheme='teal' onClick={handleMint}>
             MINT TICKET
           </Button>
         )

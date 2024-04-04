@@ -11,6 +11,7 @@ import {
   Modal,
   Input,
   Select,
+  Spinner,
   useToast,
   FormLabel,
   FormControl,
@@ -82,7 +83,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
   };
 
   // Pinata file and JSON upload
-  const [file, setFile] = useState("");
+  const [imageFile, setImageFile] = useState("");
   const [uploadingFile, setUploadingFile] = useState(false);
   const [uploadingJSON, setUploadingJSON] = useState(false);
 
@@ -111,7 +112,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
   };
 
   const handleUploadFileInputChange = (e) => {
-    setFile(e.target.files[0]);
+    setImageFile(e.target.files[0]);
     uploadFile(e.target.files[0]);
     checkCanCreateDraftTicket();
   };
@@ -194,7 +195,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
         },
       ],
     });
-    setFile("");
+    setImageFile("");
     setCidImage("");
     setCidJSON("");
     setCanCreateDraftTicket(false);
@@ -234,8 +235,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
           color: "gray.700", // Change text color on hover
         }}
       >
-        <AddIcon mr={2} />
-        <Text fontSize="lg">Add a ticket</Text>
+        <Text fontSize="lg"><AddIcon mb={1} mr={2} />Add a ticket</Text>
       </Card>
 
       {/* Modal */}
@@ -246,7 +246,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
             <FormLabel>Ticket image</FormLabel>
             <input type="file" id="file" ref={inputFile} onChange={handleUploadFileInputChange} />
             <button disabled={uploadingFile} onClick={() => inputFile.current.click()}>
-              {uploadingFile && "Uploading..."}
+              {uploadingFile && <Spinner mt={2} color="teal.200" />}
             </button>
             <FormHelperText>jpg, png, pdf</FormHelperText>
             {cidImage && (
@@ -305,7 +305,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
             }}
             pointerEvents={canCreateDraftTicket ? "auto" : "none"} // Disable pointer events if not clickable
           >
-            <Text textAlign="center">CREATE TICKET DRAFT</Text>
+            { uploadingJSON ? <Spinner color="whiteAlpha.900" /> : <Text textAlign="center">CREATE TICKET DRAFT</Text> }
           </Box>
         </ModalContent>
       </Modal>

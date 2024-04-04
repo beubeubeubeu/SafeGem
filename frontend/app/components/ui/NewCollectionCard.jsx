@@ -12,6 +12,7 @@ import {
   Text,
   Modal,
   Input,
+  Spinner,
   useToast,
   FormLabel,
   FormControl,
@@ -32,7 +33,11 @@ const NewCollectionCard = ({onSuccessCreateCollection}) => {
   const toast = useToast();
 
   // Create (clone) a new collection
-  const { writeContract: createCollection, isLoading: isCreatingCollection } = useWriteContract({
+  const {
+    writeContract: createCollection,
+    isPending: isPendingCreatingCollection,
+    isLoading: isCreatingCollection
+  } = useWriteContract({
     mutation: {
       onSuccess() {
         toast({
@@ -140,7 +145,12 @@ const NewCollectionCard = ({onSuccessCreateCollection}) => {
               color: "whiteAlpha.900" // Lighter white text on hover
             }}
           >
-            <Text textAlign="center">CREATE COLLECTION</Text>
+            {
+              (isCreatingCollection || isPendingCreatingCollection) ?
+                (<Spinner color="whiteAlpha.900" />)
+                  :
+                (<Text textAlign="center">CREATE COLLECTION</Text>)
+            }
           </Box>
         </ModalContent>
       </Modal>
