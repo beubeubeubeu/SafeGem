@@ -65,7 +65,7 @@ const Collection = ({ params }) => {
     getAllTickets();
   }, [address, collection])
 
-  const handleDelete = async (index) => {
+  const handleDeleteItem = async (index) => {
     // Retrieve the current drafts array from local storage and parse it
     let drafts = JSON.parse(localStorage.getItem('ticketDrafts')) || {};
     // Remove the item at the specified index
@@ -75,6 +75,10 @@ const Collection = ({ params }) => {
       localStorage.setItem('ticketDrafts', JSON.stringify(drafts));
     }
     getTickets();
+  }
+
+  const handleMintedItem = async () => {
+    console.log("TODO implement parent handleMintedItem");
   }
 
   return (
@@ -103,7 +107,7 @@ const Collection = ({ params }) => {
           </GridItem>
 
           {/* Loop over tickets to generate Ticket Cards, wrapped with GridItem */}
-          {tickets && tickets.map((ticket, index) => (
+          {tickets && collection && tickets.map((ticket, index) => (
             <GridItem key={index}>
               <TicketCard
                 index={index}
@@ -115,7 +119,9 @@ const Collection = ({ params }) => {
                 category={ticket.category}
                 draft={true}
                 tokenId={ticket.tokenId}
-                onDeleteItem={handleDelete}
+                collection={collection}
+                onDeleteItem={handleDeleteItem}
+                onMintedItem={handleMintedItem}
               />
             </GridItem>
           ))}

@@ -67,11 +67,12 @@ async function initializedUserCollectionFixture() {
 
 async function safeTicketsFixture() {
   const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1 } = await loadFixture(initializedUserCollectionFixture);
-  ticketURI = "https://example.com/ticket";
-  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI };
+  jsonCid = "123456789";
+  imageCid = "abcdefghi";
+  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, imageCid };
 };
 async function mintedTicketFixture() {
-  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI  } = await loadFixture(safeTicketsFixture);
+  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, imageCid  } = await loadFixture(safeTicketsFixture);
   // Wrap Transfer event listening in a promise
   const mintedTicketPromise = new Promise((resolve) => {
     safeTickets.on("Transfer", (from, to, ticketId, event) => {
@@ -83,27 +84,27 @@ async function mintedTicketFixture() {
     });
   })
 
-  const tx = await safeTickets.mintTicket(userCollectionAddress, ticketURI);
+  const tx = await safeTickets.mintTicket(userCollectionAddress, imageCid, jsonCid);
   await tx.wait();
 
   // Wait for the promise to resolve with the token Id
   const ticketId = await mintedTicketPromise;
-  return { safeTickets, marketplace, userCollectionAddress, ticketURI, ticketId, owner, sgnr1 };
+  return { safeTickets, marketplace, userCollectionAddress, imageCid, jsonCid, ticketId, owner, sgnr1 };
 };
 
 async function ticketToBuyFixture() {
-  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI, ticketId } = await loadFixture(mintedTicketFixture);
+  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, ticketId } = await loadFixture(mintedTicketFixture);
   // Set the ticket on sale and define a price
   await marketplace.setTicketOnSale(ticketId, true);
   const ticketPrice = ethers.parseEther("2.0");
   await marketplace.setTicketPrice(ticketId, ticketPrice);
-  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI, ticketId, ticketPrice };
+  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, ticketId, ticketPrice };
 }
 
 async function ticketBoughtFixture() {
-  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI, ticketId, ticketPrice } = await loadFixture(ticketToBuyFixture);
+  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, ticketId, ticketPrice } = await loadFixture(ticketToBuyFixture);
   await marketplace.connect(sgnr1).buyTicket(ticketId, { value: ticketPrice })
-  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, ticketURI, ticketId, ticketPrice };
+  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, ticketId, ticketPrice };
 }
 
 module.exports = {

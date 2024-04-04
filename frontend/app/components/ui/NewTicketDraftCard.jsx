@@ -1,8 +1,9 @@
 'use client'
 
 import { useAccount } from 'wagmi';
-import { React, useState, useRef } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
+import { pinataImageUrl } from "@/lib/helpers";
+import { React, useState, useRef } from 'react';
 import {
   Box,
   Text,
@@ -28,7 +29,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
 
   const [canCreateDraftTicket, setCanCreateDraftTicket] = useState(false);
 
-  const [cidFile, setCidFile] = useState("");
+  const [cidImage, setCidImage] = useState("");
   const [cidJSON, setCidJSON] = useState("");
 
   // Initialize the ticketMetadata state with default values
@@ -96,7 +97,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
         body: data,
       });
       const resData = await res.json();
-      setCidFile(resData.IpfsHash);
+      setCidImage(resData.IpfsHash);
       updateTicketMetadata('image', `ipfs://${resData.IpfsHash}`);
       setUploadingFile(false);
       checkCanCreateDraftTicket();
@@ -154,7 +155,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
 
     const ticketDraft = {
       cidJSON: resCidJSON,
-      imageUrl: `${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${cidFile}`,
+      imageUrl: pinataImageUrl(cidImage),
       concertName: ticketMetadata.attributes[0].value,
       venue: ticketMetadata.attributes[1].value,
       date: ticketMetadata.attributes[2].value,
@@ -199,7 +200,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
       ],
     });
     setFile("");
-    setCidFile("");
+    setCidImage("");
     setCidJSON("");
     setCanCreateDraftTicket(false);
     onClose();
@@ -253,9 +254,9 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
               {uploadingFile && "Uploading..."}
             </button>
             <FormHelperText>jpg, png, pdf</FormHelperText>
-            {cidFile && (
+            {cidImage && (
               <img
-                src={`${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${cidFile}`}
+                src={pinataImageUrl(cidImage)}
                 alt="Image from IPFS"
               />
             )}

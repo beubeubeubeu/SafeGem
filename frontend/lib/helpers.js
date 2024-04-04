@@ -8,3 +8,7 @@ export function generateRandomId(length) {
   }
   return result;
 }
+
+export function pinataImageUrl(cidImage) {
+  return `${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/${cidImage}`
+}
