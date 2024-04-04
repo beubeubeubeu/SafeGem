@@ -25,14 +25,15 @@ const Collection = ({ params }) => {
   const name = searchParams.get('name')
 
   const { address } = useAccount();
-  const [tickets, setTickets] = useState([{}])
+  const [tickets, setTickets] = useState()
 
   const onSuccessCreateDraftTicket = () => {
     getTickets();
   }
 
   const getTickets = async () => {
-    const tmpTickets = JSON.parse(localStorage.getItem('ticketDrafts')) || []
+    const collection = params.address
+    const tmpTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[collection] || []
     // const userCollectionCreatedEvents = await publicClient.getLogs({
     //   address: userCollectionFactoryAddress,
     //   event: parseAbiItem('event UserCollectionCreated(address _userAddress, address _newCollectionAddress, string _collectionName, uint _timestamp)'),
@@ -95,11 +96,11 @@ const Collection = ({ params }) => {
           spacing="20px"
         >
           <GridItem>
-            <NewTicketDraftCard onSuccessCreateDraftTicket={onSuccessCreateDraftTicket}></NewTicketDraftCard>
+            <NewTicketDraftCard onSuccessCreateDraftTicket={onSuccessCreateDraftTicket} collection={params.address}></NewTicketDraftCard>
           </GridItem>
 
           {/* Loop over tickets to generate Ticket Cards, wrapped with GridItem */}
-          {tickets.map((ticket, index) => (
+          {tickets && tickets.map((ticket, index) => (
             <GridItem key={index}>
               <TicketCard
                 index={index}

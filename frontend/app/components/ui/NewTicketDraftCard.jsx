@@ -18,7 +18,7 @@ import {
   FormHelperText,
 } from '@chakra-ui/react';
 
-const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
+const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -99,9 +99,11 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
       setCidFile(resData.IpfsHash);
       updateTicketMetadata('image', `ipfs://${resData.IpfsHash}`);
       setUploadingFile(false);
+      checkCanCreateDraftTicket();
     } catch (e) {
       console.log(e);
       setUploadingFile(false);
+      checkCanCreateDraftTicket();
       alert("Trouble uploading file");
     }
   };
@@ -124,7 +126,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
       const resData = await res.json();
       setCidJSON(resData.res.IpfsHash);
       setUploadingJSON(false);
-      handleCreateTicketDraft();
+      handleCreateTicketDraft(resData.res.IpfsHash);
     } catch (e) {
       console.log(e);
       setUploadingJSON(false);
@@ -133,17 +135,25 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
   }
 
   // Create a new draft ticket
-  const handleCreateTicketDraft = async () => {
-    let existingDrafts;
+  const handleCreateTicketDraft = async (resCidJSON) => {
+
+    let ticketDraftsStorage;
     try {
       // Attempt to parse the existing drafts from localStorage
-      existingDrafts = JSON.parse(localStorage.getItem('ticketDrafts')) || [];
+      ticketDraftsStorage = JSON.parse(localStorage.getItem('ticketDrafts')) || {};
+      if (Array.isArray(ticketDraftsStorage) && ticketDraftsStorage.length === 0) {
+        ticketDraftsStorage = {}; // Convert to an empty object
+      }
     } catch (e) {
-      // If an error occurs, default to an empty array
-      existingDrafts = [];
+      // If an error occurs, default to an empty object
+      ticketDraftsStorage = {};
     }
+
+    // Ensure 'collection' key exists and is an array, otherwise initialize it as an empty array
+    ticketDraftsStorage[collection] = ticketDraftsStorage[collection] || [];
+
     const ticketDraft = {
-      cidJSON: cidJSON,
+      cidJSON: resCidJSON,
       imageUrl: `${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${cidFile}`,
       concertName: ticketMetadata.attributes[0].value,
       venue: ticketMetadata.attributes[1].value,
@@ -151,9 +161,17 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket}) => {
       category: ticketMetadata.attributes[3].value,
       draft: true,
       tokenId: null
-    }
-    existingDrafts.push(ticketDraft);
-    localStorage.setItem('ticketDrafts', JSON.stringify(existingDrafts));
+    };
+
+    // Push the new draft into the 'collection' array
+    ticketDraftsStorage[collection].push(ticketDraft);
+    console.log("ticketDraftsStorage: ", ticketDraftsStorage)
+    console.log("collection: ", ticketDraftsStorage[collection])
+    console.log("ticketDraft: ", ticketDraft)
+
+    // Save the updated object back to local storage
+    localStorage.setItem('ticketDrafts', JSON.stringify(ticketDraftsStorage));
+
     toast({
       title: "Draft created. Go mint !",
       status: "success",

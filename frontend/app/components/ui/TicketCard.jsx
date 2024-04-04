@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   Card,
   Text,
   Stack,
@@ -46,14 +47,16 @@ const TicketCard = ({ index, tokenId, cidJSON, imageUrl, concertName, category, 
         </Stack>
       </CardBody>
       <Divider />
-      <CardFooter>
+      <CardFooter justifyContent="space-between">
         <ButtonGroup spacing='2'>
           <Button variant='solid' colorScheme='teal'>
             MINT TICKET
           </Button>
+          <Box display="flex">
           <Button variant='link' colorScheme='red' onClick={() => handleDelete(index)}>
             Delete
           </Button>
+          </Box>
         </ButtonGroup>
       </CardFooter>
     </Card>

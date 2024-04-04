@@ -12,7 +12,7 @@ import NewCollectionCard from '../components/ui/NewCollectionCard';
 const Collections = () => {
 
   const { address } = useAccount();
-  const [userCollections, setUserCollections] = useState([{}])
+  const [userCollections, setUserCollections] = useState();
 
   const getUserCollections = async () => {
     const tmpUserCollections = []
@@ -59,7 +59,7 @@ const Collections = () => {
           </GridItem>
 
           {/* Loop over userCollections to generate Collection Cards, wrapped with GridItem */}
-          {userCollections.map((collection, index) => (
+          {userCollections && userCollections.map((collection, index) => (
             <GridItem key={index}>
               <CollectionCard
                 name={collection.name}
