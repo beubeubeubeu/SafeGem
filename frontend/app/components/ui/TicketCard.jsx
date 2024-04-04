@@ -115,7 +115,7 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, draft, collection, onDe
     >
       <CardBody>
         { draft ? (
-          <HStack justify="space-between" mb={2}>
+          <HStack minH="43px" justify="space-between" mb={2}>
             <Text fontSize="xs">Draft</Text>
             <Box>
               <Button size="xs" variant='link' colorScheme='red' onClick={handleDelete}>

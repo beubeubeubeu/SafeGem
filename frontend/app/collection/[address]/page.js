@@ -111,7 +111,7 @@ const Collection = ({ params }) => {
       >
         <SimpleGrid
           columns={{ base: 1, md: 3 }}
-          spacing="20px"
+          spacing="32px"
         >
           <GridItem>
             <NewTicketDraftCard onSuccessCreateDraftTicket={onSuccessCreateDraftTicket} collection={params.address}></NewTicketDraftCard>
