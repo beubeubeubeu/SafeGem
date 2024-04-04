@@ -18,3 +18,23 @@ export async function POST(request) {
     );
   }
 }
+
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const cidJSON = searchParams.get('cidJSON');
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${cidJSON}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    const metadata = await res.json()
+    return NextResponse.json({ metadata })
+  } catch (e) {
+    console.log(e);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}

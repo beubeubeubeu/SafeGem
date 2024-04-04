@@ -8,6 +8,9 @@ import { React, useState, useEffect } from 'react';
 import TicketCard from '../../components/ui/TicketCard';
 import NewTicketDraftCard from '../../components/ui/NewTicketDraftCard';
 import {
+  safeTicketsAddress
+} from '@/constants';
+import {
   Box,
   Text,
   Flex,
@@ -25,7 +28,7 @@ const Collection = ({ params }) => {
   const name = searchParams.get('name')
 
   const { address } = useAccount();
-  const [tickets, setTickets] = useState()
+  const [tickets, setTickets] = useState([]);
   const [collection, setCollection] = useState('');
 
   useEffect(() => {
@@ -43,21 +46,23 @@ const Collection = ({ params }) => {
     } catch (e) {
       tmpTickets = []
     }
-    // const userCollectionCreatedEvents = await publicClient.getLogs({
-    //   address: userCollectionFactoryAddress,
-    //   event: parseAbiItem('event UserCollectionCreated(address _userAddress, address _newCollectionAddress, string _collectionName, uint _timestamp)'),
-    //   fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
-    //   toBlock: 'latest'
-    // })
-    // userCollectionCreatedEvents
-    //   .filter(event => event.args._userAddress === address)
-    //   .map(async event => {
-    //     tmpUserCollections.push({
-    //       name: event.args._collectionName,
-    //       address: event.args._newCollectionAddress,
-    //       shortAddress: `${event.args._newCollectionAddress.substring(0, 12)}...${event.args._newCollectionAddress.substring(event.args._newCollectionAddress.length - 12)}`
-    //     })
-    //   })
+    const ticketMintedEvents = await publicClient.getLogs({
+      address: safeTicketsAddress,
+      event: parseAbiItem('event TicketMinted(uint256 indexed _tokenId, address _collection, string _imageCid, string _jsonCid, uint256 _timestamp)'),
+      fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
+      toBlock: 'latest'
+    })
+    console.log("TICKET MINTED EVENTS", ticketMintedEvents)
+    ticketMintedEvents
+      .filter(event => event.args._collection === collection)
+      .map(async event => {
+        tmpTickets.push({
+          tokenId: event.args._tokenId,
+          cidJSON: event.args._jsonCid,
+          cidImage: event.args._imageCid,
+          draft: false
+      })
+    })
     setTickets(tmpTickets);
   }
 
@@ -82,8 +87,9 @@ const Collection = ({ params }) => {
     getTickets();
   }
 
-  const handleMintedItem = async () => {
-    console.log("TODO implement parent handleMintedItem");
+  const handleMintedItem = async (index) => {
+    handleDeleteItem(index);
+    getTickets();
   }
 
   return (
@@ -112,17 +118,13 @@ const Collection = ({ params }) => {
           </GridItem>
 
           {/* Loop over tickets to generate Ticket Cards, wrapped with GridItem */}
-          {tickets && collection && tickets.map((ticket, index) => (
+          { collection && tickets.length > 0 && tickets.map((ticket, index) => (
             <GridItem key={index}>
               <TicketCard
                 index={index}
                 cidJSON={ticket.cidJSON}
                 cidImage={ticket.cidImage}
-                concertName={ticket.concertName}
-                venue={ticket.venue}
-                date={ticket.date}
-                category={ticket.category}
-                draft={true}
+                draft={ticket.draft}
                 tokenId={ticket.tokenId}
                 collection={collection}
                 onDeleteItem={handleDeleteItem}

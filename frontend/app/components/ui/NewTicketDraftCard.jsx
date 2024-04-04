@@ -2,11 +2,12 @@
 
 import { useAccount } from 'wagmi';
 import { AddIcon } from '@chakra-ui/icons';
-import { getPinataImageUrl } from "@/lib/helpers";
 import { React, useState, useRef } from 'react';
+import { getPinataImageUrl } from "@/lib/helpers";
 import {
   Box,
   Text,
+  Card,
   Modal,
   Input,
   Select,
@@ -157,19 +158,12 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
     const ticketDraft = {
       cidJSON: resCidJSON,
       cidImage: cidImage,
-      concertName: ticketMetadata.attributes[0].value,
-      venue: ticketMetadata.attributes[1].value,
-      date: ticketMetadata.attributes[2].value,
-      category: ticketMetadata.attributes[3].value,
       draft: true,
       tokenId: null
     };
 
     // Push the new draft into the 'collection' array
     ticketDraftsStorage[collection].push(ticketDraft);
-    console.log("ticketDraftsStorage: ", ticketDraftsStorage)
-    console.log("collection: ", ticketDraftsStorage[collection])
-    console.log("ticketDraft: ", ticketDraft)
 
     // Save the updated object back to local storage
     localStorage.setItem('ticketDrafts', JSON.stringify(ticketDraftsStorage));
@@ -219,30 +213,30 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
 
   return (
     <>
-      <Box
-        as="button"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        h="472px" // Height of the card
-        w="285px" // Width of the card
-        bg="whiteAlpha.900" // Background color
-        color="gray.600" // Text color
+      <Card
+        maxW='xs'
         borderWidth="2px"
+        bg="whiteAlpha.900"
         borderColor="teal.200"
-        borderRadius="md"
+        size={'sm'}
+        minH="443px"
+        minW="258px"
+        onClick={onOpen}
+        alignItems="center"
+        color="gray.600" // Text color
+        justifyContent="center"
         boxShadow="md"
         transition="background-color 0.2s, color 0.2s"
+        cursor="pointer"
         _hover={{
           boxShadow: "lg",
           bg: "gray.100", // Change bg color on hover
           color: "gray.700", // Change text color on hover
         }}
-        onClick={onOpen}
       >
         <AddIcon mr={2} />
         <Text fontSize="lg">Add a ticket</Text>
-      </Box>
+      </Card>
 
       {/* Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
