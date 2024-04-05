@@ -1,8 +1,13 @@
 name: Slither Analysis
 on: [push]
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: crytic/slither-action@v0.3.2
+
+      - name: Slither Analysis
+        uses: crytic/slither-action@v0.3.2
+        with:
+          target: "blockchain/"
