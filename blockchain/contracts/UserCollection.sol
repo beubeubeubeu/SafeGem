@@ -4,9 +4,10 @@ pragma solidity ^0.8.25;
 
 import "./SafeTickets.sol";
 import "./Marketplace.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-contract UserCollection {
+contract UserCollection is ReentrancyGuard {
 
   error MustBeOwner();
   error WithdrawFailed();
@@ -77,7 +78,11 @@ contract UserCollection {
   /**
    * @dev The owner should be able to withdraw Eth.
    */
-  function withdraw() external onlyOwner {
+  function withdraw()
+    external
+    onlyOwner
+    nonReentrant
+  {
     uint amount = address(this).balance;
     (bool received,) = msg.sender.call{ value: amount }('');
     if(!received) {

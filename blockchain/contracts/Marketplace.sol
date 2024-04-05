@@ -4,8 +4,9 @@ pragma solidity ^0.8.25;
 
 import { SafeTickets } from "./SafeTickets.sol";
 import { UserCollection } from "./UserCollection.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract Marketplace {
+contract Marketplace is ReentrancyGuard {
 
   error WithdrawFailed();
   error TicketNotForSale();
@@ -62,7 +63,7 @@ contract Marketplace {
     external
     onlyCollectionOwner(_ticketId)
   {
-    if(_onSale == true && ticketSelling[_ticketId].selling) {
+    if(_onSale && ticketSelling[_ticketId].selling) {
       revert TicketAlreadySold();
     }
     ticketSelling[_ticketId].onSale = _onSale;
@@ -95,6 +96,7 @@ contract Marketplace {
   function buyTicket(uint _ticketId)
     external
     payable
+    nonReentrant
     onlyTicketForSale(_ticketId)
   {
     if(msg.value < ticketSelling[_ticketId].price) {
@@ -120,6 +122,7 @@ contract Marketplace {
    */
   function transferTicket(uint _ticketId)
     external
+    nonReentrant
   {
     SafeTickets safeTicketsInstance = SafeTickets(safeTickets);
     UserCollection userCollectionInstance = UserCollection(
@@ -135,7 +138,10 @@ contract Marketplace {
   /**
    * @dev Withdraws ETH from marketplace.
    */
-  function withdraw(uint _amount) external {
+  function withdraw(uint _amount)
+    external
+    nonReentrant
+  {
     if(_amount > balances[msg.sender]) {
         revert NotEnoughFundsOnBalance();
     }

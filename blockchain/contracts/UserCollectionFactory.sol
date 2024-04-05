@@ -2,10 +2,11 @@
 
 pragma solidity ^0.8.25;
 
-import { UserCollection } from "./UserCollection.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
+import { UserCollection } from "./UserCollection.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract UserCollectionFactory {
+contract UserCollectionFactory is ReentrancyGuard {
 
   error UCF_InvalidImplementationAddress();
 
@@ -32,7 +33,10 @@ contract UserCollectionFactory {
   /**
   * @dev Creates a new clone of the UserCollection contract.
   */
-  function createNFTCollection(string memory _collectionName) external {
+  function createNFTCollection(string memory _collectionName)
+    external
+    nonReentrant
+  {
     address newCollectionAddress = Clones.clone(userCollection);
     UserCollection(payable(newCollectionAddress)).initialize(_collectionName, msg.sender, safeTickets, marketplace);
     emit UserCollectionCreated(msg.sender, newCollectionAddress, _collectionName, block.timestamp);

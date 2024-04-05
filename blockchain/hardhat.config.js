@@ -9,6 +9,9 @@ const ALCHEMY = process.env.ALCHEMY_URL || "";
 // const INFURA_URL = process.env.INFURA_URL || "";
 const ETHERSCAN = process.env.ETHERSCAN_API_KEY || "";
 
+// Horrible workaround to bypass errors on github workflow complaining
+// about undefined env variables (tried a bunch of things and couldn't get it
+// such as github secrets)
 if(process.env.LOCAL) {
   module.exports = {
     solidity: "0.8.25",
