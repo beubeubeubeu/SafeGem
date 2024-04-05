@@ -27,4 +27,4 @@ jobs:
     - name: Run Hardhat Test
       run: |
         cd blockchain
-        yarn run hardhat test
+        yarn run hardhat test --network localhost
