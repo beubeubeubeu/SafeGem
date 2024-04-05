@@ -23,14 +23,14 @@ contract Marketplace {
 
   address immutable safeTickets;
 
-  mapping (uint ticketId => sellingInfo) public ticketSelling;
   mapping (address => uint) balances;
+  mapping (uint ticketId => sellingInfo) public ticketSelling;
 
-  event TicketPriceChanged(uint indexed _ticketId, uint _price);
-  event TicketOnSaleChanged(uint indexed _ticketId, bool _onSale);
-  event FundsWithdrawed(address indexed _withdrawer, uint _amount);
-  event TicketBought(uint indexed _ticketId, address _buyer, uint _price);
-  event TicketTransferred(uint indexed _ticketId, address _seller, address _buyer);
+  event TicketPriceChanged(uint indexed _ticketId, uint _price, uint _timestamp);
+  event TicketOnSaleChanged(uint indexed _ticketId, bool _onSale, uint _timestamp);
+  event FundsWithdrawed(address indexed _withdrawer, uint _amount, uint _timestamp);
+  event TicketBought(uint indexed _ticketId, address _buyer, uint _price, uint _timestamp);
+  event TicketTransferred(uint indexed _ticketId, address _seller, address _buyer, uint _timestamp);
 
   constructor(address _safeTickets) {
     if (_safeTickets == address(0)) {
@@ -66,7 +66,7 @@ contract Marketplace {
       revert TicketAlreadySold();
     }
     ticketSelling[_ticketId].onSale = _onSale;
-    emit TicketOnSaleChanged(_ticketId, _onSale);
+    emit TicketOnSaleChanged(_ticketId, _onSale, block.timestamp);
   }
 
   /**
@@ -79,7 +79,7 @@ contract Marketplace {
     onlyTicketForSale(_ticketId)
   {
     ticketSelling[_ticketId].price = _priceInWei;
-    emit TicketPriceChanged(_ticketId, _priceInWei);
+    emit TicketPriceChanged(_ticketId, _priceInWei, block.timestamp);
   }
 
   /**
@@ -109,7 +109,7 @@ contract Marketplace {
     balances[formerWalletOwner] += msg.value;
     ticketSelling[_ticketId].selling = true;
     ticketSelling[_ticketId].onSale = false;
-    emit TicketBought(_ticketId, msg.sender, msg.value);
+    emit TicketBought(_ticketId, msg.sender, msg.value, block.timestamp);
   }
 
   /**
@@ -129,7 +129,7 @@ contract Marketplace {
     address newOwner = safeTicketsInstance.getApproved(_ticketId);
     userCollectionInstance.transferTicket(formerOwner, newOwner, _ticketId);
     ticketSelling[_ticketId].selling = false;
-    emit TicketTransferred(_ticketId, formerOwner, newOwner);
+    emit TicketTransferred(_ticketId, formerOwner, newOwner, block.timestamp);
   }
 
   /**
@@ -144,7 +144,7 @@ contract Marketplace {
     if(!received) {
       revert WithdrawFailed();
     }
-    emit FundsWithdrawed(msg.sender, _amount);
+    emit FundsWithdrawed(msg.sender, _amount, block.timestamp);
   }
 
   /**

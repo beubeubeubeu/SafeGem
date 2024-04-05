@@ -1,9 +1,11 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useEffect, useState, React } from 'react';
-import { useWriteContract, useAccount } from 'wagmi';
+import { useWriteContract, useAccount, useReadContract } from 'wagmi';
 import {
   safeTicketsAbi,
-  safeTicketsAddress
+  marketplaceAbi,
+  safeTicketsAddress,
+  marketplaceAddress
 } from '@/constants';
 import {
   getPinataImageUrl,
@@ -19,6 +21,7 @@ import {
   Badge,
   HStack,
   Button,
+  Spinner,
   Heading,
   Divider,
   useToast,
@@ -26,13 +29,26 @@ import {
   CardFooter
 } from '@chakra-ui/react';
 
-const TicketCard = ({ index, tokenId, cidJSON, cidImage, draft, collection, onDeleteItem, onMintedItem }) => {
+const TicketCard = ({
+  index,
+  tokenId,
+  cidJSON,
+  cidImage,
+  draft,
+  collection,
+  onDeleteItem,
+  onMintedItem,
+  onTicketOnsale
+}) => {
 
   const [fetchingMetadata, setFetchingMetadata] = useState(true);
   const [concertName, setConcertName] = useState('');
   const [category, setCategory] = useState('Floor');
-  const [date, setDate] = useState('');
+  const [selling, setSelling] = useState('');
+  const [onSale, setOnSale] = useState('');
   const [venue, setVenue] = useState('');
+  const [price, setPrice] = useState('');
+  const [date, setDate] = useState('');
 
   const { address } = useAccount();
 
@@ -50,21 +66,39 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, draft, collection, onDe
     "Golden circle": 'yellow',
   };
 
+  // Get ticket selling info
+  const {data: ticketSellingInfo, refetch: refetchTicketSellingInfo } = useReadContract({
+    address: marketplaceAddress,
+    abi: marketplaceAbi,
+    functionName: 'ticketSelling',
+    args: [tokenId]
+  });
+
+  // Fetch ticket data
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setFetchingMetadata(true);
         const response = await fetch(`/api/json?cidJSON=${cidJSON}`);
         const ticketMetadata = await response.json();
+        if (!draft) {
+          const sellingInfo = await ticketSellingInfo;
+          setOnSale(sellingInfo[0]);
+          setSelling(sellingInfo[1]);
+          setPrice(sellingInfo[2]);
+        }
         setConcertName(ticketMetadata.metadata.attributes[0].value);
         setVenue(ticketMetadata.metadata.attributes[1].value);
         setDate(ticketMetadata.metadata.attributes[2].value);
         setCategory(ticketMetadata.metadata.attributes[3].value);
+
+        setFetchingMetadata(false);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
     };
     fetchData();
-  }, [cidJSON]); // Depend on cidJSON to refetch if it changes
+  }, [cidJSON, ticketSellingInfo]); // Depend on cidJSON to refetch if it changes
 
   const handleDelete = () => {
     onDeleteItem(index);
@@ -83,9 +117,11 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, draft, collection, onDe
         onMintedItem(index);
       },
       onError(error) {
+        const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
+        const match = error.message.match(pattern);
         toast({
           title: "Failed to mint ticket.",
-          description: error.shortMessage,
+          description: match[1] || error.message,
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -101,6 +137,42 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, draft, collection, onDe
       functionName: "mintTicket",
       account: address,
       args: [collection, cidImage, cidJSON]
+    });
+  };
+
+  // Set a ticket on sale
+  const { writeContract: setTicketOnsale, isPending: isPendingSetTicketOnsale, isLoading: isSettingTicketOnsale } = useWriteContract({
+    mutation: {
+      onSuccess() {
+        toast({
+          title: "Ticket on sale. 💸",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        refetchTicketSellingInfo();
+      },
+      onError(error) {
+        const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
+        const match = error.message.match(pattern);
+        toast({
+          title: "Failed to set ticket on sale.",
+          description: match[1] || error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    }
+  });
+
+  const handleSetTicketOnsale = (toggle) => {
+    setTicketOnsale({
+      address: marketplaceAddress,
+      abi: marketplaceAbi,
+      functionName: "setTicketOnSale",
+      account: address,
+      args: [tokenId, toggle]
     });
   };
 
@@ -150,22 +222,60 @@ const TicketCard = ({ index, tokenId, cidJSON, cidImage, draft, collection, onDe
           />
         </Box>
         <Stack mt='6' spacing='3'>
-          <Heading size='md'>{concertName}</Heading>
+          <Heading size='md'>
+            {fetchingMetadata ?  <Spinner color="gray.200"></Spinner> : concertName}
+          </Heading>
           <Text>
-            {venue}
+            {fetchingMetadata ? <Spinner color="gray.200"></Spinner> : venue}
           </Text>
-          <Text>{timestampToHumanDate(date)}</Text>
+          <Text>
+            {fetchingMetadata ? <Spinner color="gray.200"></Spinner> : timestampToHumanDate(date)}
+          </Text>
         </Stack>
       </CardBody>
       <Divider />
-      <CardFooter justify="center">
+      <CardFooter
+        bgColor={categoryBorderColor[category]}
+        justify="center"
+      >
         { draft ? (
-          <Button isLoading={isMinting || isPendingMinting} variant='solid' colorScheme='teal' onClick={handleMint}>
+          <Button
+            isLoading={isMinting || isPendingMinting}
+            variant='ghost'
+            colorScheme='teal'
+            onClick={handleMint}
+          >
             MINT TICKET
           </Button>
         )
-        : (
-          <Button variant='solid' colorScheme='yellow'>SET ON SALE</Button>
+        : onSale ? (
+          <>
+            <Button
+              isLoading={false}
+              variant='ghost'
+              colorScheme='yellow'
+              // onClick={handleSetPrice}
+            >
+              SET PRICE
+            </Button>
+            <Button
+              isLoading={false}
+              variant='ghost'
+              colorScheme='red'
+              onClick={() => handleSetTicketOnsale(false)}
+            >
+              UNSELL
+            </Button>
+          </>
+        ) : (
+          <Button
+            isLoading={isPendingSetTicketOnsale || isSettingTicketOnsale}
+            variant='ghost'
+            colorScheme='teal'
+            onClick={() => handleSetTicketOnsale(true)}
+          >
+            SET ON SALE
+          </Button>
         )}
       </CardFooter>
     </Card>

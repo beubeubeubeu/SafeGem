@@ -52,7 +52,6 @@ const Collection = ({ params }) => {
       fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
       toBlock: 'latest'
     })
-    console.log("TICKET MINTED EVENTS", ticketMintedEvents)
     ticketMintedEvents
       .filter(event => event.args._collection === collection)
       .map(async event => {
@@ -129,6 +128,7 @@ const Collection = ({ params }) => {
                 collection={collection}
                 onDeleteItem={handleDeleteItem}
                 onMintedItem={handleMintedItem}
+                onTicketOnsale={getTickets}
               />
             </GridItem>
           ))}

@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
+const { anyUint } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { loadFixture } = require('@nomicfoundation/hardhat-toolbox/network-helpers');
 const { mintedTicketFixture, ticketToBuyFixture, ticketBoughtFixture } = require('./Fixtures');
 
@@ -48,7 +49,7 @@ describe("Marketplace.sol tests", function () {
         const { marketplace, ticketId } = await loadFixture(mintedTicketFixture);
         await expect(marketplace.setTicketOnSale(ticketId, true))
           .to.emit(marketplace, 'TicketOnSaleChanged')
-          .withArgs(ticketId, true);
+          .withArgs(ticketId, true, anyUint);
       })
     });
   });
@@ -97,7 +98,7 @@ describe("Marketplace.sol tests", function () {
         await marketplace.setTicketOnSale(ticketId, true);
         await expect(marketplace.setTicketPrice(ticketId, newPrice))
           .to.emit(marketplace, 'TicketPriceChanged')
-          .withArgs(ticketId, newPrice);
+          .withArgs(ticketId, newPrice, anyUint);
       })
     });
   });
@@ -152,7 +153,7 @@ describe("Marketplace.sol tests", function () {
 
         // event TicketBought(_ticketId, msg.sender, msg.value);
         await expect(marketplace.connect(sgnr1).buyTicket(ticketId, { value: ticketPrice }))
-          .to.emit(marketplace, 'TicketBought').withArgs(ticketId, sgnr1.address, ticketPrice);
+          .to.emit(marketplace, 'TicketBought').withArgs(ticketId, sgnr1.address, ticketPrice, anyUint);
       })
 
       it('Should emit an OpenZeppelin ERC721 Approval event', async function () {
@@ -184,7 +185,7 @@ describe("Marketplace.sol tests", function () {
         const previousOwner = await safeTickets.ownerOf(ticketId);
         await expect(marketplace.connect(sgnr1).transferTicket(ticketId))
           .to.emit(marketplace, 'TicketTransferred')
-          .withArgs(ticketId, previousOwner, sgnr1.address);
+          .withArgs(ticketId, previousOwner, sgnr1.address, anyUint);
       });
     });
   });
@@ -212,7 +213,7 @@ describe("Marketplace.sol tests", function () {
       it('Should emit an event', async function () {
         const { marketplace, owner } = await loadFixture(ticketBoughtFixture);
         const ownerBalance = await marketplace.getBalanceOfUser(owner);
-        expect(marketplace.withdraw(ownerBalance)).to.emit(marketplace, 'FundsWithdrawed').withArgs(owner.address, ownerBalance);
+        expect(marketplace.withdraw(ownerBalance)).to.emit(marketplace, 'FundsWithdrawed').withArgs(owner.address, ownerBalance, anyUint);
       })
     });
   });

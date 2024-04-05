@@ -51,9 +51,11 @@ const NewCollectionCard = ({onSuccessCreateCollection}) => {
         onSuccessCreateCollection();
       },
       onError(error) {
+        const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
+        const match = error.message.match(pattern);
         toast({
           title: "Failed to create collection.",
-          description: error.shortMessage,
+          description: match[1] || error.message,
           status: "error",
           duration: 5000,
           isClosable: true,
