@@ -1,17 +1,20 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@nomicfoundation/hardhat-verify");
 require('hardhat-docgen');
 require('dotenv').config()
 
-const ALCHEMY = process.env.ALCHEMY || "";
-const PK = process.env.PK || "";
-const ETHERSCAN = process.env.ETHERSCAN || "";
+// Wallet PK exported from metamask
+const WALLET_PK = process.env.WALLET_PK || "";
+const ALCHEMY = process.env.ALCHEMY_URL || "";
+// const INFURA_URL = process.env.INFURA_URL || "";
+const ETHERSCAN = process.env.ETHERSCAN_API_KEY || "";
 
 module.exports = {
   solidity: "0.8.25",
   networks: {
     sepolia: {
       url: ALCHEMY,
-      accounts: [`0x${PK}`],
+      accounts: [`0x${WALLET_PK}`],
       chainId: 11155111
     },
     localhost: {
@@ -20,6 +23,8 @@ module.exports = {
     }
   },
   etherscan: {
-    apiKey: ETHERSCAN
-  },
+    apiKey: {
+      sepolia: ETHERSCAN
+    }
+  }
 };

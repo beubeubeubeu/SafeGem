@@ -22,7 +22,11 @@ async function deployedBaseContractsFixture() {
   const marketplaceAddress = await marketplace.getAddress();
 
   const UserCollectionFactory = await ethers.getContractFactory('UserCollectionFactory');
-  const userCollectionFactory = await UserCollectionFactory.deploy(userCollectionAddress, safeTicketsAddress, marketplaceAddress);
+  const userCollectionFactory = await UserCollectionFactory.deploy(
+    userCollectionAddress,
+    safeTicketsAddress,
+    marketplaceAddress
+  );
 
   return {
     userCollection,
@@ -40,7 +44,12 @@ async function clonedOneUserCollectionFixture() {
   const { userCollectionFactory } = await loadFixture(deployedBaseContractsFixture);
   // Wrap UserCollectionCreated event listening in a promise
   const cloneAddressPromise = new Promise((resolve) => {
-    userCollectionFactory.on("UserCollectionCreated", (_userAddress, _newCollectionAddress, _collectionName, _timestamp, event) => {
+    userCollectionFactory.on("UserCollectionCreated", (
+      _userAddress,
+      _newCollectionAddress,
+      _collectionName,
+      _timestamp,
+    event) => {
       console.log("New clone user address is", _userAddress);
       console.log("New clone collection address is", _newCollectionAddress);
       console.log("New clone collection name is", _collectionName);
@@ -60,19 +69,64 @@ async function clonedOneUserCollectionFixture() {
 };
 
 async function initializedUserCollectionFixture() {
-  const { safeTickets, marketplace, safeTicketsAddress, marketplaceAddress, userCollectionAddress, userCollection, owner, sgnr1 } = await loadFixture(deployedBaseContractsFixture);
-  await userCollection.initialize("First initialization", owner.address, safeTicketsAddress, marketplaceAddress);
-  return { safeTickets, marketplace, userCollection, safeTicketsAddress, marketplaceAddress, userCollectionAddress, owner, sgnr1 };
+  const {
+    sgnr1,
+    owner,
+    marketplace,
+    safeTickets,
+    userCollection,
+    safeTicketsAddress,
+    marketplaceAddress,
+    userCollectionAddress
+  } = await loadFixture(deployedBaseContractsFixture);
+  await userCollection.initialize(
+    "First initialization",
+    owner.address,
+    safeTicketsAddress,
+    marketplaceAddress
+  );
+  return {
+    owner,
+    sgnr1,
+    safeTickets,
+    marketplace,
+    userCollection,
+    safeTicketsAddress,
+    marketplaceAddress,
+    userCollectionAddress
+  };
 }
 
 async function safeTicketsFixture() {
-  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1 } = await loadFixture(initializedUserCollectionFixture);
+  const {
+    owner,
+    sgnr1,
+    safeTickets,
+    marketplace,
+    userCollectionAddress,
+  } = await loadFixture(initializedUserCollectionFixture);
   jsonCid = "123456789";
   imageCid = "abcdefghi";
-  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, imageCid };
+  return {
+    owner,
+    sgnr1,
+    jsonCid,
+    imageCid,
+    safeTickets,
+    marketplace,
+    userCollectionAddress
+  };
 };
 async function mintedTicketFixture() {
-  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, imageCid  } = await loadFixture(safeTicketsFixture);
+  const {
+    owner,
+    sgnr1,
+    jsonCid,
+    imageCid,
+    safeTickets,
+    marketplace,
+    userCollectionAddress
+  } = await loadFixture(safeTicketsFixture);
   // Wrap Transfer event listening in a promise
   const mintedTicketPromise = new Promise((resolve) => {
     safeTickets.on("Transfer", (from, to, ticketId, event) => {
@@ -89,22 +143,66 @@ async function mintedTicketFixture() {
 
   // Wait for the promise to resolve with the token Id
   const ticketId = await mintedTicketPromise;
-  return { safeTickets, marketplace, userCollectionAddress, imageCid, jsonCid, ticketId, owner, sgnr1 };
+  return {
+    owner,
+    sgnr1,
+    jsonCid,
+    ticketId,
+    imageCid,
+    safeTickets,
+    marketplace,
+    userCollectionAddress
+  };
 };
 
 async function ticketToBuyFixture() {
-  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, ticketId } = await loadFixture(mintedTicketFixture);
+  const {
+    owner,
+    sgnr1,
+    jsonCid,
+    ticketId,
+    safeTickets,
+    marketplace,
+    userCollectionAddress
+  } = await loadFixture(mintedTicketFixture);
   // Set the ticket on sale and define a price
   await marketplace.setTicketOnSale(ticketId, true);
   const ticketPrice = ethers.parseEther("2.0");
   await marketplace.setTicketPrice(ticketId, ticketPrice);
-  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, ticketId, ticketPrice };
+  return {
+    owner,
+    sgnr1,
+    jsonCid,
+    ticketId,
+    ticketPrice,
+    safeTickets,
+    marketplace,
+    userCollectionAddress
+  };
 }
 
 async function ticketBoughtFixture() {
-  const { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, ticketId, ticketPrice } = await loadFixture(ticketToBuyFixture);
+  const {
+    owner,
+    sgnr1,
+    jsonCid,
+    ticketId,
+    ticketPrice,
+    safeTickets,
+    marketplace,
+    userCollectionAddress
+  } = await loadFixture(ticketToBuyFixture);
   await marketplace.connect(sgnr1).buyTicket(ticketId, { value: ticketPrice })
-  return { safeTickets, marketplace, userCollectionAddress, owner, sgnr1, jsonCid, ticketId, ticketPrice };
+  return {
+    owner,
+    sgnr1,
+    jsonCid,
+    ticketId,
+    ticketPrice,
+    safeTickets,
+    marketplace,
+    userCollectionAddress
+  };
 }
 
 module.exports = {
