@@ -18,24 +18,24 @@ jobs:
         with:
           node-version: '20' # Set this to your Node.js version
 
-      # Create .env file and populate it with secrets
-      - name: Create env file
-        run: |
-          touch .env
-          echo "ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}" > .env
-          echo "ALCHEMY_URL=${{ secrets.ALCHEMY_URL }}" > .env
-          echo "WALLET_PK=${{ secrets.WALLET_PK }}" > .env
-          cat .env
-        working-directory: ./blockchain
-        env: # Define environment variables here if needed for the `run` script
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-          ALCHEMY_URL: ${{ secrets.ALCHEMY_URL }}
-          WALLET_PK: ${{ secrets.WALLET_PK }}
-
       # Install dependencies in the blockchain directory
       - name: Install dependencies
         run: yarn install
         working-directory: ./blockchain
+
+      # Create .env file and populate it with secrets
+      - name: Create env file
+        run: |
+          touch .env
+          echo "ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}" >> .env
+          echo "ALCHEMY_URL=${{ secrets.ALCHEMY_URL }}" >> .env
+          echo "WALLET_PK=${{ secrets.WALLET_PK }}" >> .env
+          cat .env
+        working-directory: ./blockchain
+        env: # This is not needed for writing secrets to .env but demonstrated for context
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          ALCHEMY_URL: ${{ secrets.ALCHEMY_URL }}
+          WALLET_PK: ${{ secrets.WALLET_PK }}
 
       # Run Hardhat tests
       - name: Run Hardhat Test
