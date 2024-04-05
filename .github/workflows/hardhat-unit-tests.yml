@@ -22,9 +22,9 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo "ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}" >> ./blockchain/.env
-          echo "ALCHEMY_URL=${{ secrets.ALCHEMY_URL }}" >> ./blockchain/.env
-          echo "WALLET_PK=${{ secrets.WALLET_PK }}" >> ./blockchain/.env
+          echo "ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}" >> .env
+          echo "ALCHEMY_URL=${{ secrets.ALCHEMY_URL }}" >> .env
+          echo "WALLET_PK=${{ secrets.WALLET_PK }}" >> .env
         working-directory: ./blockchain
 
       # Install dependencies in the blockchain directory

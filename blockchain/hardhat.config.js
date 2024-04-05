@@ -9,6 +9,8 @@ const ALCHEMY = process.env.ALCHEMY_URL || "";
 // const INFURA_URL = process.env.INFURA_URL || "";
 const ETHERSCAN = process.env.ETHERSCAN_API_KEY || "";
 
+console.log("WALLET_PK", WALLET_PK);
+
 module.exports = {
   solidity: "0.8.25",
   networks: {
