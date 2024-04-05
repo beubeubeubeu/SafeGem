@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.25;
 
+import "@openzeppelin/contracts/utils/Strings.sol";
 import { UserCollection } from "./UserCollection.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -74,9 +75,16 @@ contract SafeTickets is ERC721URIStorage {
     return UserCollection(payable(collection)).owner() == msg.sender;
   }
 
+  /**
+   * @dev Concatenates two strings.
+   * Slither detected potential issue here.
+   * This should be done offchain.
+   * https://github.com/crytic/slither/wiki/Detector-Documentation#abi-encodePacked-collision
+   *
+   */
   function concatenateStrings(string memory a, string memory b)
     public pure returns (string memory)
   {
-    return string(abi.encode(a, b));
+    return string(abi.encodePacked(a, b));
   }
 }
