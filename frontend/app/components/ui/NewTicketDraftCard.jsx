@@ -204,7 +204,7 @@ const NewTicketDraftCard = ({onSuccessCreateDraftTicket, collection}) => {
 
   const checkCanCreateDraftTicket = () => {
     setCanCreateDraftTicket(
-      ticketMetadata.image !== '' &&
+      imageFile !== '' &&
       ticketMetadata.attributes[0].value !== '' &&
       ticketMetadata.attributes[1].value !== '' &&
       ticketMetadata.attributes[2].value !== '' &&

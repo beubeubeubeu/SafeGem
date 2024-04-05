@@ -128,7 +128,6 @@ const Collection = ({ params }) => {
                 collection={collection}
                 onDeleteItem={handleDeleteItem}
                 onMintedItem={handleMintedItem}
-                onTicketOnsale={getTickets}
               />
             </GridItem>
           ))}

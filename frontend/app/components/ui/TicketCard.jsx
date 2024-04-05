@@ -1,5 +1,9 @@
+'use client'
+
+import { FaEthereum } from "react-icons/fa";
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useEffect, useState, React } from 'react';
+import TicketPriceModal from '../modals/TicketPriceModal';
 import { useWriteContract, useAccount, useReadContract } from 'wagmi';
 import {
   safeTicketsAbi,
@@ -8,13 +12,15 @@ import {
   marketplaceAddress
 } from '@/constants';
 import {
-  getPinataImageUrl,
+  weiToEth,
   formatTokenId,
+  getPinataImageUrl,
   timestampToHumanDate
 } from '@/lib/helpers';
 import {
   Box,
   Card,
+  Icon,
   Text,
   Stack,
   Image,
@@ -26,7 +32,8 @@ import {
   Divider,
   useToast,
   CardBody,
-  CardFooter
+  CardFooter,
+  useDisclosure
 } from '@chakra-ui/react';
 
 const TicketCard = ({
@@ -37,11 +44,11 @@ const TicketCard = ({
   draft,
   collection,
   onDeleteItem,
-  onMintedItem,
-  onTicketOnsale
+  onMintedItem
 }) => {
 
   const [fetchingMetadata, setFetchingMetadata] = useState(true);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [concertName, setConcertName] = useState('');
   const [category, setCategory] = useState('Floor');
   const [selling, setSelling] = useState('');
@@ -177,108 +184,125 @@ const TicketCard = ({
   };
 
   return (
-    <Card
-      borderWidth="2px"
-      bg="whiteAlpha.900"
-      borderColor={categoryBorderColor[category]}
-      size={'sm'}
-      minH="443px"
-      minW="258px"
-    >
-      <CardBody>
-        { draft ? (
-          <HStack minH="43px" justify="space-between" mb={2}>
-            <Text fontSize="xs">Draft</Text>
-            <Box>
-              <Button size="xs" variant='link' colorScheme='red' onClick={handleDelete}>
-                <DeleteIcon></DeleteIcon>
-              </Button>
-            </Box>
-          </HStack>
-        ) : (
-          <HStack justify="space-between" mb={2}>
-            <Badge colorScheme={categoryBadgeColor[category]}>{category}</Badge>
-            <Heading>{formatTokenId(tokenId)}</Heading>
-          </HStack>
-        )}
-        <Box
-          height="180px" // Fixed height for the container
-          width="100%" // Make sure the width matches the container width
-          overflow="hidden" // Hide overflow to handle images larger than the container
-          position="relative" // Position relative to allow absolute positioning of the image
-          borderColor={categoryBorderColor[category]}
-          borderWidth="2px"
-          borderRadius='sm'
-        >
-          <Image
-            src={getPinataImageUrl(cidImage)}
-            alt={`SafeTicket ${tokenId}`}
-            objectFit="cover" // Cover the container without stretching the image
-            position="absolute" // Position absolute to be bound by the Box
-            width="100%"
-            height="100%"
-            top="0"
-            left="0"
-          />
-        </Box>
-        <Stack mt='6' spacing='3'>
-          <Heading size='md'>
-            {fetchingMetadata ?  <Spinner color="gray.200"></Spinner> : concertName}
-          </Heading>
-          <Text>
-            {fetchingMetadata ? <Spinner color="gray.200"></Spinner> : venue}
-          </Text>
-          <Text>
-            {fetchingMetadata ? <Spinner color="gray.200"></Spinner> : timestampToHumanDate(date)}
-          </Text>
-        </Stack>
-      </CardBody>
-      <Divider />
-      <CardFooter
-        bgColor={categoryBorderColor[category]}
-        justify="center"
+    <>
+      <TicketPriceModal isOpen={isOpen} onClose={onClose} tokenId={tokenId} onPriceSet={refetchTicketSellingInfo} />
+      <Card
+        borderWidth="2px"
+        bg="whiteAlpha.900"
+        borderColor={categoryBorderColor[category]}
+        size={'sm'}
+        minH="443px"
+        minW="258px"
       >
-        { draft ? (
-          <Button
-            isLoading={isMinting || isPendingMinting}
-            variant='ghost'
-            colorScheme='teal'
-            onClick={handleMint}
+        <CardBody>
+          { draft ? (
+            <HStack minH="43px" justify="space-between" mb={2}>
+              <Text fontSize="xs">Draft</Text>
+              <Box>
+                <Button size="xs" variant='link' colorScheme='red' onClick={handleDelete}>
+                  <DeleteIcon></DeleteIcon>
+                </Button>
+              </Box>
+            </HStack>
+          ) : (
+            <HStack justify="space-between" mb={2}>
+              <Badge colorScheme={categoryBadgeColor[category]}>{category}</Badge>
+              <Heading>{formatTokenId(tokenId)}</Heading>
+            </HStack>
+          )}
+          <Box
+            height="180px" // Fixed height for the container
+            width="100%" // Make sure the width matches the container width
+            overflow="hidden" // Hide overflow to handle images larger than the container
+            position="relative" // Position relative to allow absolute positioning of the image
+            borderColor={categoryBorderColor[category]}
+            borderWidth="2px"
+            borderRadius='sm'
           >
-            MINT TICKET
-          </Button>
-        )
-        : onSale ? (
-          <>
+            <Image
+              src={getPinataImageUrl(cidImage)}
+              alt={`SafeTicket ${tokenId}`}
+              objectFit="cover" // Cover the container without stretching the image
+              position="absolute" // Position absolute to be bound by the Box
+              width="100%"
+              height="100%"
+              top="0"
+              left="0"
+            />
+          </Box>
+          <Stack mt='6' spacing='3'>
+            <Heading size='md'>
+              {fetchingMetadata ?  <Spinner color="gray.200"></Spinner> : concertName}
+            </Heading>
+            <Text>
+              {fetchingMetadata ? <Spinner color="gray.200"></Spinner> : venue}
+            </Text>
+            <HStack justify="space-between">
+              <Text>
+                {fetchingMetadata ? <Spinner color="gray.200"></Spinner> : timestampToHumanDate(date)}
+              </Text>
+                {fetchingMetadata ? (
+                  <Spinner color="gray.200" />
+                ) : (
+                  price && onSale && (
+                    <HStack spacing={2}>
+                      <Text fontWeight={'bold'} fontFamily={'mono'}>
+                        {weiToEth(price)}
+                      </Text>
+                      <FaEthereum marginRight={0}/>
+                    </HStack>
+                  )
+                )}
+            </HStack>
+          </Stack>
+        </CardBody>
+        <Divider />
+        <CardFooter
+          bgColor={categoryBorderColor[category]}
+          justify="center"
+        >
+          { fetchingMetadata ? <Spinner color="gray.200"></Spinner> : draft ? (
             <Button
-              isLoading={false}
+              isLoading={isMinting || isPendingMinting}
               variant='ghost'
-              colorScheme='yellow'
-              // onClick={handleSetPrice}
+              colorScheme='teal'
+              onClick={handleMint}
             >
-              SET PRICE
+              MINT TICKET
             </Button>
+          )
+          : onSale ? (
+            <>
+              <Button
+                isLoading={false}
+                variant='ghost'
+                colorScheme='yellow'
+                onClick={onOpen}
+              >
+                SET PRICE
+              </Button>
+              <Button
+                isLoading={false}
+                variant='ghost'
+                colorScheme='red'
+                onClick={() => handleSetTicketOnsale(false)}
+              >
+                UNSELL
+              </Button>
+            </>
+          ) : (
             <Button
-              isLoading={false}
+              isLoading={isPendingSetTicketOnsale || isSettingTicketOnsale}
               variant='ghost'
-              colorScheme='red'
-              onClick={() => handleSetTicketOnsale(false)}
+              colorScheme='teal'
+              onClick={() => handleSetTicketOnsale(true)}
             >
-              UNSELL
+              SET ON SALE
             </Button>
-          </>
-        ) : (
-          <Button
-            isLoading={isPendingSetTicketOnsale || isSettingTicketOnsale}
-            variant='ghost'
-            colorScheme='teal'
-            onClick={() => handleSetTicketOnsale(true)}
-          >
-            SET ON SALE
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
+          )}
+        </CardFooter>
+      </Card>
+    </>
   );
 };
 

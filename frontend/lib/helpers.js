@@ -1,4 +1,4 @@
-
+import { ethers } from 'ethers';
 export function generateRandomId(length) {
   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
@@ -27,4 +27,23 @@ export function timestampToHumanDate(timestamp) {
   const day = date.getDate().toString().padStart(2, '0');
 
   return `${year}-${month}-${day}`;
+}
+
+export function ethToWei(eth) {
+  if (!eth) {
+    return 0;
+  }
+  return ethers.parseEther(eth.toString());
+}
+
+export function weiToEth(wei) {
+  // Use ethers.js utility function to convert wei to ether
+  const eth = ethers.formatEther(wei);
+  // Format the result to 2 decimal places
+  return Number.parseFloat(eth).toFixed(2);
+}
+
+export function ethInDollar(eth) {
+  const exchangeRate = 3300;
+  return (parseFloat(eth) * exchangeRate).toFixed(2); // Fixed to 2 decimal places
 }
