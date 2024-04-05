@@ -14,10 +14,10 @@ const Footer = () => {
       <VStack>
         <Spacer />
         <Text position={"absolute"} bottom={5} fontSize={"xs"}>
-          Alyra,{' '}
+          🎟️ A{' '}
           <Link color='teal.500' href='https://www.youtube.com/watch?v=SyNt5zm3U_M' isExternal>
-            a ticket to ride.<ExternalLinkIcon mx='2px' />
-          </Link>{' '}🎟️ 🎫 🧾</Text>
+            ticket to ride.<ExternalLinkIcon mx='2px' />
+          </Link>{' '}at Alyra.  🎫</Text>
       </VStack>
     </Box>
   )
