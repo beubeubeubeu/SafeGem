@@ -25,6 +25,7 @@ jobs:
           echo "ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}" >> .env
           echo "ALCHEMY_URL=${{ secrets.ALCHEMY_URL }}" >> .env
           echo "WALLET_PK=${{ secrets.WALLET_PK }}" >> .env
+          cat .env
         working-directory: ./blockchain
 
       # Install dependencies in the blockchain directory
