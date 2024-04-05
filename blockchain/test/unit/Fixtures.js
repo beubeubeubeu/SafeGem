@@ -1,11 +1,6 @@
 const { ethers } = require('hardhat');
 const { loadFixture } = require('@nomicfoundation/hardhat-toolbox/network-helpers');
 
-// In order "base contracts" are:
-// - UserCollection (original)
-// - SafeTickets
-// - Marketplace
-// - UserCollectionFactory
 async function deployedBaseContractsFixture() {
   const [owner, sgnr1, sgnr2, sgnr3] = await ethers.getSigners();
 

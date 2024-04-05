@@ -3,7 +3,9 @@ const {  ethers, network, run } = require("hardhat");
 
 async function main() {
 
-  if(!network.name.includes('localhost') && process.env.ETHERSCAN_API_KEY) {
+  const liveNetwork = !network.name.includes('localhost') && process.env.ETHERSCAN_API_KEY;
+
+  if(liveNetwork) {
     console.log("========================================================================================")
     console.log("Be sure to have around 0.2 SEPOLIA ETH in your account to pay for gas.")
     console.log("Deployment started...")
@@ -54,18 +56,18 @@ async function main() {
   console.log(`NEXT_PUBLIC_USER_COLLECTION_FACTORY_CONTRACT_ADDRESS="${userCollectionFactoryAddress}"`)
 
   // **************************************** Verify SafeTickets on Etherscan
-  if(!network.name.includes('localhost') && process.env.ETHERSCAN_API_KEY) {
+  if(liveNetwork) {
     await verify("SafeTickets", safeTicketsAddress, []);
-    await verify("Marketplace", marketplaceAddress, [safeTicketsAddress]);
     await verify("UserCollection", userCollectionAddress, []);
+    await verify("Marketplace", marketplaceAddress, [safeTicketsAddress]);
     await verify("UserCollectionFactory", userCollectionFactoryAddress, [userCollectionAddress, safeTicketsAddress, marketplaceAddress]);
   }
 
-  if(!network.name.includes('localhost') && process.env.ETHERSCAN_API_KEY) {
+  if(liveNetwork) {
     console.log("========================================================================================")
     console.log("For manual verifications:")
-    console.log(`yarn hardhat verify --network sepolia "${userCollectionAddress}"`)
     console.log(`yarn hardhat verify --network sepolia "${safeTicketsAddress}"`)
+    console.log(`yarn hardhat verify --network sepolia "${userCollectionAddress}"`)
     console.log(`yarn hardhat verify --network sepolia "${marketplaceAddress}" "${safeTicketsAddress}"`)
     console.log(`yarn hardhat verify --network sepolia "${userCollectionFactoryAddress}" "${userCollectionAddress}" "${safeTicketsAddress}" "${marketplaceAddress}"`)
   }
