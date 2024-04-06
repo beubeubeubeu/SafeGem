@@ -56,14 +56,6 @@ describe("Marketplace.sol tests", function () {
         await expect(marketplace.connect(sgnr1).setTicketPrice(ticketId, ethers.parseEther("1.0")))
           .to.be.revertedWithCustomError(marketplace, "MP_MustBeCollectionOwner");
       });
-
-      it('Should revert if called ticket is not on sale', async function () {
-        const { marketplace, ticketId } = await loadFixture(mintedTicketFixture);
-        // Ensure the ticket is not on sale before testing
-        await marketplace.setTicketOnSale(ticketId, false);
-        await expect(marketplace.setTicketPrice(ticketId, ethers.parseEther("1.0")))
-          .to.be.revertedWithCustomError(marketplace, "TicketNotForSale");
-      });
     });
 
     describe('Effects', function () {

@@ -77,7 +77,6 @@ contract Marketplace is ReentrancyGuard {
   function setTicketPrice(uint _ticketId, uint _priceInWei)
     external
     onlyCollectionOwner(_ticketId)
-    onlyTicketForSale(_ticketId)
   {
     ticketSelling[_ticketId].price = _priceInWei;
     emit TicketPriceChanged(_ticketId, _priceInWei, block.timestamp);
