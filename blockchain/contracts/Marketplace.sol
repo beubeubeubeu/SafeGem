@@ -102,8 +102,6 @@ contract Marketplace is ReentrancyGuard {
     if(msg.value < ticketSelling[_ticketId].price) {
       revert NotEnoughFundsProvided();
     }
-    ticketSelling[_ticketId].selling = true;
-    ticketSelling[_ticketId].onSale = false;
     SafeTickets safeTicketsInstance = SafeTickets(safeTickets);
     UserCollection userCollectionInstance = UserCollection(
       payable(safeTicketsInstance.ownerOf(_ticketId))
@@ -111,6 +109,8 @@ contract Marketplace is ReentrancyGuard {
     address formerWalletOwner = userCollectionInstance.owner();
     balances[formerWalletOwner] += msg.value;
     userCollectionInstance.approveBuyer(msg.sender, _ticketId);
+    ticketSelling[_ticketId].selling = true;
+    ticketSelling[_ticketId].onSale = false;
     emit TicketBought(_ticketId, msg.sender, msg.value, block.timestamp);
   }
 
