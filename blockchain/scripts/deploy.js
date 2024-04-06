@@ -48,12 +48,14 @@ async function main() {
     `UserCollectionFactory deployed to: ${userCollectionFactoryAddress}`
   );
 
-  // ******************* Copy pasted format for Vercel
-  console.log("           => copiable PUBLIC env vars for contract addresses for Vercel :")
-  console.log(`NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS="${marketplaceAddress}"`)
-  console.log(`NEXT_PUBLIC_SAFE_TICKETS_CONTRACT_ADDRESS="${safeTicketsAddress}"`)
-  console.log(`NEXT_PUBLIC_USER_COLLECTION_CONTRACT_ADDRESS="${userCollectionAddress}"`)
-  console.log(`NEXT_PUBLIC_USER_COLLECTION_FACTORY_CONTRACT_ADDRESS="${userCollectionFactoryAddress}"`)
+  if(liveNetwork) {
+    // ******************* Copy pasted format for Vercel
+    console.log("           => copiable PUBLIC env vars for contract addresses for Vercel :")
+    console.log(`NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS="${marketplaceAddress}"`)
+    console.log(`NEXT_PUBLIC_SAFE_TICKETS_CONTRACT_ADDRESS="${safeTicketsAddress}"`)
+    console.log(`NEXT_PUBLIC_USER_COLLECTION_CONTRACT_ADDRESS="${userCollectionAddress}"`)
+    console.log(`NEXT_PUBLIC_USER_COLLECTION_FACTORY_CONTRACT_ADDRESS="${userCollectionFactoryAddress}"`)
+  }
 
   // **************************************** Verify SafeTickets on Etherscan
   if(liveNetwork) {

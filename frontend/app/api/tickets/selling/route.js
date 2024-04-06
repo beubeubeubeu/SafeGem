@@ -1,4 +1,4 @@
-import { getContract } from 'viem'
+import { formatEther } from 'viem'
 import { NextResponse } from "next/server";
 import { publicClient } from '@/lib/client';
 import { safeTicketsAbi } from '@/constants';
@@ -8,34 +8,53 @@ import { marketplaceAddress } from '@/constants';
 
 export async function GET(request) {
   try {
-    const safeTicketsContract = getContract({
+    const safeTicketsContractConfig = {
       address: safeTicketsAddress,
-      abi: safeTicketsAbi,
-      client: publicClient,
-    })
+      abi: safeTicketsAbi
+    };
 
-    const marketPlaceContract = getContract({
+    const marketPlaceContractConfig = {
       address: marketplaceAddress,
-      abi: marketplaceAbi,
-      client: publicClient,
+      abi: marketplaceAbi
+    };
+
+    const totalSupply = await publicClient.readContract({
+      ...safeTicketsContractConfig,
+      functionName: 'totalSupply',
     })
 
-    const totalSupply = await safeTicketsContract.totalSupply();
     let ticketsOnSale = [];
 
     for (let i = 0; i < totalSupply; i++) {
-      const ticketSellingInfo = await marketPlaceContract.ticketSelling(i);
-      if (ticketSellingInfo.onSale && ticketSellingInfo.price.gt(0)) {
-        ticketsOnSale.push({ id: i, price: ticketSellingInfo.price.toString() });
+      const ticketSellingInfo = await publicClient.readContract({
+        ...marketPlaceContractConfig,
+        functionName: 'ticketSelling',
+        args: [i]
+      })
+      if (
+        ticketSellingInfo[0] &&
+        !ticketSellingInfo[1] &&
+        parseFloat(formatEther(ticketSellingInfo[2])) > 0
+      ) {
+        ticketsOnSale.push({tokenId: i});
       }
     }
 
     const ticketsWithCIDs = await Promise.all(ticketsOnSale.map(async (ticket) => {
-      const imageCid = await safeTicketsContract.tokenImageCids(ticket.id);
-      const jsonCid = await safeTicketsContract.tokenJsonCids(ticket.id);
-      return { ...ticket, imageCid, jsonCid };
+      const cidImage = await publicClient.readContract({
+        ...safeTicketsContractConfig,
+        functionName: 'tokenImageCids',
+        args: [ticket.tokenId]
+      })
+      const cidJSON = await publicClient.readContract({
+        ...safeTicketsContractConfig,
+        functionName: 'tokenJsonCids',
+        args: [ticket.tokenId]
+      })
+      return { ...ticket, cidImage, cidJSON };
     }));
-    return NextResponse.json({ ticketsWithCIDs })
+
+    return NextResponse.json( ticketsWithCIDs );
   } catch (e) {
     console.log(e);
     return NextResponse.json(

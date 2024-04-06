@@ -124,8 +124,10 @@ const Collection = ({ params }) => {
                 cidJSON={ticket.cidJSON}
                 cidImage={ticket.cidImage}
                 draft={ticket.draft}
+                shop={false}
                 tokenId={ticket.tokenId}
                 collection={collection}
+                onBoughtItem={() => null}
                 onDeleteItem={handleDeleteItem}
                 onMintedItem={handleMintedItem}
               />

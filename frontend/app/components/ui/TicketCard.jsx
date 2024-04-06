@@ -20,12 +20,12 @@ import {
 import {
   Box,
   Card,
-  Icon,
   Text,
   Stack,
   Image,
   Badge,
   HStack,
+  Center,
   Button,
   Spinner,
   Heading,
@@ -42,6 +42,7 @@ const TicketCard = ({
   cidJSON,
   cidImage,
   draft,
+  shop,
   collection,
   onDeleteItem,
   onMintedItem
@@ -50,7 +51,7 @@ const TicketCard = ({
   const [fetchingMetadata, setFetchingMetadata] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [concertName, setConcertName] = useState('');
-  const [category, setCategory] = useState('Floor');
+  const [category, setCategory] = useState('Loading');
   const [selling, setSelling] = useState('');
   const [onSale, setOnSale] = useState('');
   const [venue, setVenue] = useState('');
@@ -62,12 +63,14 @@ const TicketCard = ({
   const toast = useToast();
 
   const categoryBorderColor = {
+    "Loading": 'gray.50',
     "Floor": 'gray.200',
     "Category 1": 'teal.400',
     "Golden circle": 'yellow.400',
   };
 
   const categoryBadgeColor = {
+    "Loading": 'gray.50',
     "Floor": 'default',
     "Category 1": 'teal',
     "Golden circle": 'yellow',
@@ -206,8 +209,12 @@ const TicketCard = ({
             </HStack>
           ) : (
             <HStack justify="space-between" mb={2}>
+              { !fetchingMetadata && (
               <Badge colorScheme={categoryBadgeColor[category]}>{category}</Badge>
-              <Heading>{formatTokenId(tokenId)}</Heading>
+              )}
+              { !fetchingMetadata && (
+                <Heading>{formatTokenId(tokenId)}</Heading>
+              )}
             </HStack>
           )}
           <Box
@@ -219,16 +226,18 @@ const TicketCard = ({
             borderWidth="2px"
             borderRadius='sm'
           >
-            <Image
-              src={getPinataImageUrl(cidImage)}
-              alt={`SafeTicket ${tokenId}`}
-              objectFit="cover" // Cover the container without stretching the image
-              position="absolute" // Position absolute to be bound by the Box
-              width="100%"
-              height="100%"
-              top="0"
-              left="0"
-            />
+            {fetchingMetadata ? <Center width="100%" height="100%"><Spinner color="gray.200"></Spinner></Center> : (
+              <Image
+                src={getPinataImageUrl(cidImage)}
+                alt={`SafeTicket ${tokenId}`}
+                objectFit="cover" // Cover the container without stretching the image
+                position="absolute" // Position absolute to be bound by the Box
+                width="100%"
+                height="100%"
+                top="0"
+                left="0"
+              />
+            )}
           </Box>
           <Stack mt='6' spacing='3'>
             <Heading size='md'>
@@ -270,8 +279,16 @@ const TicketCard = ({
             >
               MINT TICKET
             </Button>
-          )
-          : onSale ? (
+          ) : shop ? (
+            <Button
+              isLoading={isPendingSetTicketOnsale || isSettingTicketOnsale}
+              variant='ghost'
+              colorScheme='yellow'
+              onClick={() => handleSetTicketOnsale(true)}
+            >
+              BUY
+            </Button>
+          ) : onSale ? (
             <>
               <Button
                 isLoading={false}
