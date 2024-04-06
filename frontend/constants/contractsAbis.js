@@ -38,6 +38,11 @@ export const marketplaceAbi = [
   },
   {
     "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "TicketAlreadySold",
     "type": "error"
   },
@@ -65,6 +70,12 @@ export const marketplaceAbi = [
         "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_timestamp",
+        "type": "uint256"
       }
     ],
     "name": "FundsWithdrawed",
@@ -90,6 +101,12 @@ export const marketplaceAbi = [
         "internalType": "uint256",
         "name": "_price",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_timestamp",
+        "type": "uint256"
       }
     ],
     "name": "TicketBought",
@@ -109,6 +126,12 @@ export const marketplaceAbi = [
         "internalType": "bool",
         "name": "_onSale",
         "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_timestamp",
+        "type": "uint256"
       }
     ],
     "name": "TicketOnSaleChanged",
@@ -127,6 +150,12 @@ export const marketplaceAbi = [
         "indexed": false,
         "internalType": "uint256",
         "name": "_price",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_timestamp",
         "type": "uint256"
       }
     ],
@@ -153,6 +182,12 @@ export const marketplaceAbi = [
         "internalType": "address",
         "name": "_buyer",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_timestamp",
+        "type": "uint256"
       }
     ],
     "name": "TicketTransferred",
@@ -272,19 +307,6 @@ export const marketplaceAbi = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_ticketId",
-        "type": "uint256"
-      }
-    ],
-    "name": "transferTicket",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -625,30 +647,6 @@ export const safeTicketsAbi = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "a",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "b",
-        "type": "string"
-      }
-    ],
-    "name": "concatenateStrings",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -1016,6 +1014,11 @@ export const userCollectionAbi = [
   },
   {
     "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "WithdrawFailed",
     "type": "error"
   },
@@ -1209,6 +1212,11 @@ export const userCollectionFactoryAbi = [
   {
     "inputs": [],
     "name": "ERC1167FailedCreateClone",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
     "type": "error"
   },
   {

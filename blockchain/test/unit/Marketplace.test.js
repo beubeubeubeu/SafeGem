@@ -20,11 +20,6 @@ describe("Marketplace.sol tests", function () {
         const { marketplace, sgnr1, ticketId } = await loadFixture(mintedTicketFixture);
         await expect(marketplace.connect(sgnr1).setTicketOnSale(ticketId, true)).to.be.revertedWithCustomError(marketplace, "MP_MustBeCollectionOwner");
       });
-
-      it('Should revert if ticket is currently beeing sold', async function () {
-        const { marketplace, sgnr1, ticketId } = await loadFixture(ticketBoughtFixture);
-        await expect(marketplace.setTicketOnSale(ticketId, true)).to.be.revertedWithCustomError(marketplace, "TicketAlreadySold");
-      });
     });
 
     describe('Effects', function () {
@@ -137,12 +132,12 @@ describe("Marketplace.sol tests", function () {
         expect(await marketplace.getBalanceOfUser(owner)).to.equal(balanceOfSellerBefore + ticketPrice);
       });
 
-      it('Should approve new owner', async function () {
+      it('Should set new owner', async function () {
         const { safeTickets, sgnr1, ticketId } = await loadFixture(ticketBoughtFixture);
 
-        const approvedAfter = await safeTickets.getApproved(ticketId)
+        const ownerAfter = await safeTickets.ownerOf(ticketId)
 
-        expect(approvedAfter).to.equal(sgnr1.address);
+        expect(ownerAfter).to.equal(sgnr1.address);
       });
     });
 
@@ -164,29 +159,6 @@ describe("Marketplace.sol tests", function () {
         await expect(marketplace.connect(sgnr1).buyTicket(ticketId, { value: ticketPrice }))
           .to.emit(safeTickets, 'Approval').withArgs(userCollectionAddress, sgnr1.address, ticketId);
       })
-    });
-  });
-
-  describe('Function: transferTicket', function () {
-    describe('Effects', function () {
-      it('Should transfer ticket', async function () {
-        const { safeTickets, marketplace, userCollectionAddress, sgnr1, ticketId } = await loadFixture(ticketBoughtFixture);
-        const previousOwner = await safeTickets.ownerOf(ticketId);
-        expect(previousOwner).to.equal(userCollectionAddress);
-        await marketplace.connect(sgnr1).transferTicket(ticketId);
-        const newOwner = await safeTickets.ownerOf(ticketId);
-        expect(newOwner).to.equal(sgnr1);
-      });
-    });
-
-    describe('Interactions', function () {
-      it('Should emit a TicketTransferred event', async function () {
-        const { marketplace, safeTickets, sgnr1, ticketId } = await loadFixture(ticketBoughtFixture);
-        const previousOwner = await safeTickets.ownerOf(ticketId);
-        await expect(marketplace.connect(sgnr1).transferTicket(ticketId))
-          .to.emit(marketplace, 'TicketTransferred')
-          .withArgs(ticketId, previousOwner, sgnr1.address, anyUint);
-      });
     });
   });
 

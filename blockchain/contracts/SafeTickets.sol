@@ -85,11 +85,15 @@ contract SafeTickets is ERC721Enumerable, ERC721URIStorage {
    *
    */
   function concatenateStrings(string memory a, string memory b)
-    public pure returns (string memory)
+    private pure returns (string memory)
   {
     return string(abi.encodePacked(a, b));
   }
 
+  /**
+   * @dev Override Openzeppelin
+   *
+  */
   function tokenURI(uint256 tokenId)
     public
     view
@@ -99,6 +103,10 @@ contract SafeTickets is ERC721Enumerable, ERC721URIStorage {
       return super.tokenURI(tokenId);
   }
 
+  /**
+   * @dev Override Openzeppelin
+   *
+  */
   function supportsInterface(bytes4 interfaceId)
     public
     view
@@ -108,6 +116,10 @@ contract SafeTickets is ERC721Enumerable, ERC721URIStorage {
     return super.supportsInterface(interfaceId);
   }
 
+  /**
+   * @dev Override Openzeppelin
+   *
+  */
   function _increaseBalance(address account, uint128 amount)
     internal
     virtual
@@ -116,6 +128,10 @@ contract SafeTickets is ERC721Enumerable, ERC721URIStorage {
     super._increaseBalance(account, amount);
   }
 
+  /**
+   * @dev Override Openzeppelin
+   *
+  */
   function _update(address to, uint256 tokenId, address auth)
     internal
     virtual

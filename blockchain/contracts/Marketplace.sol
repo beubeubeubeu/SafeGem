@@ -111,6 +111,7 @@ contract Marketplace is ReentrancyGuard {
     userCollectionInstance.approveBuyer(msg.sender, _ticketId);
     ticketSelling[_ticketId].selling = true;
     ticketSelling[_ticketId].onSale = false;
+    transferTicket(_ticketId);
     emit TicketBought(_ticketId, msg.sender, msg.value, block.timestamp);
   }
 
@@ -121,8 +122,7 @@ contract Marketplace is ReentrancyGuard {
    *
    */
   function transferTicket(uint _ticketId)
-    external
-    nonReentrant
+    private
   {
     SafeTickets safeTicketsInstance = SafeTickets(safeTickets);
     UserCollection userCollectionInstance = UserCollection(

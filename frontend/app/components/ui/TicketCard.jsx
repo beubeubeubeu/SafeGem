@@ -13,6 +13,7 @@ import {
 } from '@/constants';
 import {
   weiToEth,
+  ethToWei,
   formatTokenId,
   getPinataImageUrl,
   timestampToHumanDate
@@ -186,6 +187,44 @@ const TicketCard = ({
     });
   };
 
+  // Handle buy ticket
+  const { writeContract: buyTicket, isPending: isPendingBuyTicket, isLoading: isBuyingTicket } = useWriteContract({
+    mutation: {
+      onSuccess() {
+        toast({
+          title: "Ticket bought go to BUYINGS.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        onBoughtItem();
+      },
+      onError(error) {
+        const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
+        const match = error.message.match(pattern);
+        toast({
+          title: "Failed to buy ticket.",
+          description: match[1] || error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    }
+  });
+
+  const handleBuyTicket = () => {
+    console.log("tokenId", tokenId);
+    buyTicket({
+      address: marketplaceAddress,
+      abi: marketplaceAbi,
+      functionName: "buyTicket",
+      account: address,
+      value: price,
+      args: [tokenId]
+    });
+  };
+
   return (
     <>
       <TicketPriceModal isOpen={isOpen} onClose={onClose} tokenId={tokenId} onPriceSet={refetchTicketSellingInfo} />
@@ -281,10 +320,10 @@ const TicketCard = ({
             </Button>
           ) : shop ? (
             <Button
-              isLoading={isPendingSetTicketOnsale || isSettingTicketOnsale}
+              isLoading={isPendingBuyTicket || isBuyingTicket}
               variant='ghost'
               colorScheme='yellow'
-              onClick={() => handleSetTicketOnsale(true)}
+              onClick={handleBuyTicket}
             >
               BUY
             </Button>

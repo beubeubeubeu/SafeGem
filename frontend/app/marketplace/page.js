@@ -25,15 +25,14 @@ const Marketplace = () => {
 
   // Fetch selling ticket data (on sale)
   useEffect(() => {
-    fetchData();
+    fetchTicketsData();
   }, [address]);
 
-  const fetchData = async () => {
+  const fetchTicketsData = async () => {
     try {
       setFetchingTicketsData(true);
       const response = await fetch(`/api/tickets/selling`);
       const onSaleTickets = await response.json();
-      console.log("onSaleTickets: ", onSaleTickets);
       setTickets(onSaleTickets);
       setFetchingTicketsData(false);
     } catch (error) {
@@ -74,7 +73,7 @@ const Marketplace = () => {
                 tokenId={ticket.tokenId}
                 collection={null}
                 shop={true}
-                onBoughtItem={() => console.log("TODO")}
+                onBoughtItem={() => fetchTicketsData()}
                 onDeleteItem={() => null}
                 onMintedItem={() => null}
               />
