@@ -167,6 +167,10 @@ contract Marketplace is ReentrancyGuard {
   }
 
   function isTicketForSale(uint _ticketId) public view returns (bool) {
-    return (ticketSelling[_ticketId].onSale && !ticketSelling[_ticketId].selling);
+    return (
+      ticketSelling[_ticketId].onSale &&
+      !ticketSelling[_ticketId].selling &&
+      ticketSelling[_ticketId].price > 0
+    );
   }
 }

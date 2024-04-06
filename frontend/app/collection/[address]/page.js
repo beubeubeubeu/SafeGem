@@ -40,29 +40,23 @@ const Collection = ({ params }) => {
   }
 
   const getTickets = async () => {
-    let tmpTickets;
+    // get drafts
+    let draftTickets = [];
     try {
-      tmpTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[collection] || []
+      draftTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[collection] || []
     } catch (e) {
-      tmpTickets = []
+      console.error("Failed to fetch ticket drafts:", e);
+      draftTickets = [];
     }
-    const ticketMintedEvents = await publicClient.getLogs({
-      address: safeTicketsAddress,
-      event: parseAbiItem('event TicketMinted(uint256 indexed _tokenId, address _collection, string _imageCid, string _jsonCid, uint256 _timestamp)'),
-      fromBlock: BigInt(process.env.NEXT_PUBLIC_EVENT_BLOCK_NUMBER),
-      toBlock: 'latest'
-    })
-    ticketMintedEvents
-      .filter(event => event.args._collection === collection)
-      .map(async event => {
-        tmpTickets.push({
-          tokenId: event.args._tokenId,
-          cidJSON: event.args._jsonCid,
-          cidImage: event.args._imageCid,
-          draft: false
-      })
-    })
-    setTickets(tmpTickets);
+    // get minted tickets
+    try {
+      const response = await fetch(`/api/tickets/of_owner?address=${collection}`);
+      const mintedTickets = await response.json();
+      console.log("mintedTickets", mintedTickets)
+      setTickets([...draftTickets, ...mintedTickets]);
+    } catch (e) {
+      console.error("Failed to fetch tickets:", e);
+    }
   }
 
   useEffect(() => {
