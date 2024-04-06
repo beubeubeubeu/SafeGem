@@ -7,7 +7,7 @@ import { UserCollection } from "./UserCollection.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract SafeTickets is ERC721URIStorage {
+contract SafeTickets is ERC721Enumerable, ERC721URIStorage {
 
   error ImageAlreadyMinted();
   error MetadataAlreadyMinted();
@@ -17,10 +17,10 @@ contract SafeTickets is ERC721URIStorage {
 
   mapping (string => bool) private jsonCids;
   mapping (string => bool) private imageCids;
+  mapping (uint => string) public tokenImageCids;
+  mapping (uint => string) public tokenJsonCids;
 
   constructor() ERC721("SafeTicket", "SFT") {}
-
-  // TODO : perhaps set base URI once work with Pinata has begun
 
   modifier onlyCollectionOwner(address _collection) {
     if(!isCollectionOwner(_collection)) {
@@ -65,6 +65,8 @@ contract SafeTickets is ERC721URIStorage {
     _setTokenURI(ticketId, concatenateStrings('ipfs://', _jsonCid));
     imageCids[_imageCid] = true;
     jsonCids[_jsonCid] = true;
+    tokenImageCids[ticketId] = _imageCid;
+    tokenJsonCids[ticketId] = _jsonCid;
     emit TicketMinted(ticketId, _collection, _imageCid, _jsonCid, block.timestamp);
     return ticketId;
   }
@@ -86,5 +88,39 @@ contract SafeTickets is ERC721URIStorage {
     public pure returns (string memory)
   {
     return string(abi.encodePacked(a, b));
+  }
+
+  function tokenURI(uint256 tokenId)
+    public
+    view
+    override(ERC721URIStorage, ERC721)
+    returns (string memory)
+  {
+      return super.tokenURI(tokenId);
+  }
+
+  function supportsInterface(bytes4 interfaceId)
+    public
+    view
+    override(ERC721URIStorage, ERC721Enumerable)
+    returns (bool)
+  {
+    return super.supportsInterface(interfaceId);
+  }
+
+  function _increaseBalance(address account, uint128 amount)
+    internal
+    virtual
+    override(ERC721, ERC721Enumerable)
+  {
+    super._increaseBalance(account, amount);
+  }
+
+  function _update(address to, uint256 tokenId, address auth)
+    internal
+    virtual
+    override(ERC721, ERC721Enumerable) returns (address)
+  {
+    return super._update(to, tokenId, auth);
   }
 }
