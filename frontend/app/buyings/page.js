@@ -46,11 +46,11 @@ const Buyings = ({ params }) => {
 
   return (
     <>
-      <Heading mt={"32px"} textAlign={'center'}>Buyings</Heading>
+      <Heading mt={{sm: "32px", md: "0px"}} textAlign={'center'}>Buyings</Heading>
       <Center>
         <Box mx={5} maxWidth={'500px'}>
           <Divider my={5} border={'none'}></Divider>
-          <Text textAlign={'center'} fontSize='sm'></Text>
+          <Text textAlign={'center'} fontSize='sm'>You've earned them.</Text>
         </Box>
       </Center>
 

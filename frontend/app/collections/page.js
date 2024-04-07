@@ -6,9 +6,18 @@ import { publicClient } from '@/lib/client';
 import { React, useEffect, useState } from 'react';
 import { userCollectionFactoryAddress} from '@/constants';
 import CollectionCard from '../components/ui/CollectionCard';
-import { Flex, SimpleGrid, GridItem } from '@chakra-ui/react';
 import NewCollectionCard from '../components/ui/NewCollectionCard';
 import EmptyCollectionCard from '../components/ui/EmptyCollectionCard';
+import {
+  Box,
+  Flex,
+  Text,
+  Center,
+  Heading,
+  Divider,
+  SimpleGrid,
+  GridItem,
+} from '@chakra-ui/react';
 
 const Collections = () => {
 
@@ -49,6 +58,13 @@ const Collections = () => {
 
   return (
     <>
+      <Heading mt={{sm: "32px", md: "0px"}} textAlign={'center'}>My collections</Heading>
+      <Center>
+        <Box mx={5} maxWidth={'500px'}>
+          <Divider my={5} border={'none'}></Divider>
+          <Text textAlign={'center'} fontSize='sm'>Go mint go sell.</Text>
+        </Box>
+      </Center>
       <Flex
         mt={"32px"}
         direction="column"

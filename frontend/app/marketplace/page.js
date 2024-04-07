@@ -54,7 +54,7 @@ const Marketplace = () => {
 
   return (
     <>
-      <Heading mt={"32px"}textAlign={'center'}>Shop</Heading>
+      <Heading mt={{sm: "32px", md: "0px"}} textAlign={'center'}>Shop</Heading>
       <Center>
         <Box mx={5} maxWidth={'500px'}>
           <Divider my={5} border={'none'}></Divider>
