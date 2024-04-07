@@ -12,9 +12,7 @@ const MarketplaceBalanceWithdraw = ({
   userBalance,
   fetchingUserBalance,
   isWithdrawingBalance,
-  handleWithdrawBalance,
-  isPendingWithdrawBalance,
-  waitForWithdrawingTransaction,
+  handleWithdrawBalance
 }) => {
   return (
     <Flex
@@ -79,7 +77,7 @@ const MarketplaceBalanceWithdraw = ({
           color: "whiteAlpha.900" // Lighter white text on hover
         }}
       >
-        { (waitForWithdrawingTransaction || isPendingWithdrawBalance || isWithdrawingBalance)  ? <Spinner color="whiteAlpha.900" /> : <Text fontWeight={'bold'} fontFamily={'mono'} textAlign={'center'} >WITHDRAW</Text> }
+        { (fetchingUserBalance || isWithdrawingBalance)  ? <Spinner color="whiteAlpha.900" /> : <Text fontWeight={'bold'} fontFamily={'mono'} textAlign={'center'} >WITHDRAW</Text> }
       </Box>
     </Flex>
   )

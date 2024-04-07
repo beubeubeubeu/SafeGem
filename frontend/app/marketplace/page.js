@@ -7,8 +7,7 @@ import MarketplaceTickets from '../components/ui/MarketplaceTickets';
 import MarketplaceBalanceWithdraw from '../components/ui/MarketplaceBalanceWithdraw';
 import {
   useAccount,
-  useWriteContract,
-  useWaitForTransactionReceipt
+  useWriteContract
 } from 'wagmi';
 import {
   marketplaceAbi,
@@ -34,7 +33,6 @@ const Marketplace = () => {
 
   const address = useAccount().address
 
-  const [waitForWithdrawingTransaction, setWaitForWithdrawingTransaction] = useState(false);
   const [fetchingTicketsData, setFetchingTicketsData] = useState(true);
   const [fetchingUserBalance, setFetchingUserBalance] = useState(true);
   const [isFetchingEvents, setIsFetchingEvents] = useState(true);
@@ -87,7 +85,6 @@ const Marketplace = () => {
 
   const fetchUserBalance = async () => {
     try {
-      console.log("Fetching user balance fired...");
       setFetchingUserBalance(true);
       const response = await fetch(`/api/users/balance?address=${address}`, {
         method: 'GET', // Explicitly state the method, even if GET is the default
@@ -124,6 +121,7 @@ const Marketplace = () => {
           duration: 5000,
           isClosable: true,
         });
+        onWithdrawBalance();
       },
       onError(error) {
         const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
@@ -140,7 +138,6 @@ const Marketplace = () => {
   });
 
   const handleWithdrawBalance = () => {
-    setWaitForWithdrawingTransaction(true);
     withdrawBalance({
       address: marketplaceAddress,
       abi: marketplaceAbi,
@@ -149,32 +146,6 @@ const Marketplace = () => {
       args: [userBalance]
     });
   };
-
-  const {
-    isSuccess: isSuccessWithdrawingConfirmation,
-    isError: isErrorWithdrawingConfirmation,
-    isPending: isPendingWithdrawingConfirmation
-  } = useWaitForTransactionReceipt({hash: withdrawingData});
-
-  useEffect(() => {
-    const setWithdrawingState = async () => {
-      if(isSuccessWithdrawingConfirmation) {
-        setWaitForWithdrawingTransaction(false);
-        onWithdrawBalance();
-      } else if(isErrorWithdrawingConfirmation) {
-          toast({
-              title: "Error with withdrawing transaction.",
-              status: "error",
-              duration: 3000,
-              isClosable: true,
-          });
-          setWaitForWithdrawingTransaction(false);
-      } else if (isPendingWithdrawingConfirmation && waitForWithdrawingTransaction) {
-        setWaitForWithdrawingTransaction(true);
-      }
-    }
-    setWithdrawingState();
-  }, [isPendingWithdrawingConfirmation, isSuccessWithdrawingConfirmation, isErrorWithdrawingConfirmation])
 
   // Get marketplace events
   const getEvents = async () => {
@@ -230,8 +201,6 @@ const Marketplace = () => {
             <MarketplaceBalanceWithdraw
               fetchingUserBalance={fetchingUserBalance}
               userBalance={userBalance}
-              waitForWithdrawingTransaction={waitForWithdrawingTransaction}
-              isPendingWithdrawBalance={isPendingWithdrawBalance}
               isWithdrawingBalance={isWithdrawingBalance}
               handleWithdrawBalance={handleWithdrawBalance}
             />
