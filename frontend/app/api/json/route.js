@@ -1,3 +1,5 @@
+'use server'
+
 const pinataSDK = require('@pinata/sdk');
 import { NextResponse } from "next/server";
 import { generateRandomId } from "@/lib/helpers";

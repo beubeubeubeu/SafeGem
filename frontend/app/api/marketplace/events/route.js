@@ -1,3 +1,5 @@
+'use server'
+
 import { parseAbiItem } from 'viem';
 import { weiToEth } from '@/lib/helpers';
 import { NextResponse } from "next/server";

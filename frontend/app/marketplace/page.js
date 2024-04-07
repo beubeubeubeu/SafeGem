@@ -78,9 +78,16 @@ const Marketplace = () => {
     await getEvents();
   }
 
-  // Get user's balance on contract marketplace
+  const onWithdrawBalance = async () => {
+    setIsFetchingEvents(true);
+    setFetchingUserBalance(true);
+    await getEvents();
+    await fetchUserBalance();
+  }
+
   const fetchUserBalance = async () => {
     try {
+      console.log("Fetching user balance fired...");
       setFetchingUserBalance(true);
       const response = await fetch(`/api/users/balance?address=${address}`, {
         method: 'GET', // Explicitly state the method, even if GET is the default
@@ -117,7 +124,6 @@ const Marketplace = () => {
           duration: 5000,
           isClosable: true,
         });
-        fetchUserBalance();
       },
       onError(error) {
         const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
@@ -147,14 +153,14 @@ const Marketplace = () => {
   const {
     isSuccess: isSuccessWithdrawingConfirmation,
     isError: isErrorWithdrawingConfirmation,
-    isPending: isPendingWithdrawingBonfirmation
+    isPending: isPendingWithdrawingConfirmation
   } = useWaitForTransactionReceipt({hash: withdrawingData});
 
   useEffect(() => {
     const setWithdrawingState = async () => {
       if(isSuccessWithdrawingConfirmation) {
         setWaitForWithdrawingTransaction(false);
-        await fetchUserBalance();
+        onWithdrawBalance();
       } else if(isErrorWithdrawingConfirmation) {
           toast({
               title: "Error with withdrawing transaction.",
@@ -163,13 +169,12 @@ const Marketplace = () => {
               isClosable: true,
           });
           setWaitForWithdrawingTransaction(false);
-          await fetchUserBalance();
-      } else if (isPendingWithdrawingBonfirmation && waitForWithdrawingTransaction) {
+      } else if (isPendingWithdrawingConfirmation && waitForWithdrawingTransaction) {
         setWaitForWithdrawingTransaction(true);
       }
     }
     setWithdrawingState();
-  }, [isPendingWithdrawingBonfirmation, isSuccessWithdrawingConfirmation, isErrorWithdrawingConfirmation])
+  }, [isPendingWithdrawingConfirmation, isSuccessWithdrawingConfirmation, isErrorWithdrawingConfirmation])
 
   // Get marketplace events
   const getEvents = async () => {

@@ -1,3 +1,5 @@
+'use server'
+
 import { NextResponse } from "next/server";
 import { publicClient } from '@/lib/client';
 import { safeTicketsAbi } from '@/constants';

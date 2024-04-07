@@ -1,3 +1,5 @@
+'use server'
+
 import { formatEther } from 'viem'
 import { NextResponse } from "next/server";
 import { publicClient } from '@/lib/client';

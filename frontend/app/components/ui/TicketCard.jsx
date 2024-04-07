@@ -55,7 +55,7 @@ const TicketCard = ({
   onMintedItem
 }) => {
 
-  const [waitForbuyingTransaction, setwaitForbuyingTransaction] = useState(false);
+  const [waitForbuyingTransaction, setWaitForbuyingTransaction] = useState(false);
   const [fetchingMetadata, setFetchingMetadata] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [concertName, setConcertName] = useState('');
@@ -199,7 +199,7 @@ const TicketCard = ({
     mutation: {
       onSuccess() {
         toast({
-          title: "Ticket bought go to BUYINGS.",
+          title: "Ticket bought.",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -226,7 +226,7 @@ const TicketCard = ({
   } = useWaitForTransactionReceipt({hash: buyingData});
 
   const handleBuyTicket = () => {
-    setwaitForbuyingTransaction(true);
+    setWaitForbuyingTransaction(true);
     buyTicket({
       address: marketplaceAddress,
       abi: marketplaceAbi,
@@ -239,7 +239,7 @@ const TicketCard = ({
 
   useEffect(() => {
     if(isSuccessBuyingConfirmation) {
-      setwaitForbuyingTransaction(false);
+      setWaitForbuyingTransaction(false);
       onBoughtItem();
     } else if(isErrorBuyingConfirmation) {
         toast({
@@ -248,9 +248,9 @@ const TicketCard = ({
             duration: 3000,
             isClosable: true,
         });
-        setwaitForbuyingTransaction(false);
+        setWaitForbuyingTransaction(false);
     } else if (isPendingBuyingConfirmation && waitForbuyingTransaction) {
-      setwaitForbuyingTransaction(true);
+      setWaitForbuyingTransaction(true);
     }
   }, [isPendingBuyingConfirmation, isSuccessBuyingConfirmation, isErrorBuyingConfirmation])
 
