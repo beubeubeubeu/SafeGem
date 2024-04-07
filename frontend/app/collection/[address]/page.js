@@ -125,7 +125,7 @@ const Collection = ({ params }) => {
                 cidJSON={ticket.cidJSON}
                 cidImage={ticket.cidImage}
                 draft={ticket.draft}
-                shop={false}
+                marketplace={false}
                 buyings={false}
                 tokenId={ticket.tokenId}
                 collection={collection}

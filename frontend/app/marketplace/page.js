@@ -63,7 +63,7 @@ const Marketplace = () => {
 
   return (
     <>
-      <Heading mt={{sm: "32px", md: "0px"}} textAlign={'center'}>Shop</Heading>
+      <Heading mt={{sm: "32px", md: "0px"}} textAlign={'center'}>Marketplace</Heading>
       <Center>
         <Box mx={5} maxWidth={'500px'}>
           <Divider my={5} border={'none'}></Divider>
@@ -109,7 +109,7 @@ const Marketplace = () => {
                 draft={false}
                 tokenId={ticket.tokenId}
                 collection={null}
-                shop={true}
+                marketplace={true}
                 buyings={false}
                 onBoughtItem={onBoughtItem}
                 onDeleteItem={() => null}

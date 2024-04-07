@@ -60,7 +60,7 @@ const Buyings = ({ params }) => {
       { !isLoadingTickets && tickets.length === 0 && (
         <EmptyStateBox
           title='No ticket bought.'
-          line1='Go to the $hop page'
+          line1='Go to the marketplace page'
           line2='and treat yourself with a ticket.'
         />
       )}
@@ -90,7 +90,7 @@ const Buyings = ({ params }) => {
                 cidJSON={ticket.cidJSON}
                 cidImage={ticket.cidImage}
                 draft={false}
-                shop={false}
+                marketplace={false}
                 buyings={true}
                 tokenId={ticket.tokenId}
                 collection={address}

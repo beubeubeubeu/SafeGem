@@ -42,7 +42,7 @@ import {
 } from '@chakra-ui/react';
 
 const TicketCard = ({
-  shop,
+  marketplace,
   draft,
   index,
   buyings,
@@ -347,7 +347,7 @@ const TicketCard = ({
             >
               MINT TICKET
             </Button>
-          ) : shop ? (
+          ) : marketplace ? (
             <Button
               isLoading={isPendingBuyTicket || isBuyingTicket || waitForbuyingTransaction}
               variant='ghost'
