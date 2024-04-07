@@ -70,6 +70,7 @@ const Buyings = ({ params }) => {
                 cidImage={ticket.cidImage}
                 draft={false}
                 shop={false}
+                buyings={true}
                 tokenId={ticket.tokenId}
                 collection={address}
                 onBoughtItem={() => null}

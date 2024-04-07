@@ -93,7 +93,7 @@ const TicketPriceModal = ({isOpen, onClose, tokenId, onPriceSet}) => {
               value={price}
               min={0}
             />
-            {price && <FormHelperText>{`Approximately $${priceInDollar} USD`}</FormHelperText>}
+            {price && <FormHelperText>{`Approximately ${priceInDollar} USD`}</FormHelperText>}
           </FormControl>
           <Box
             minHeight="24px"

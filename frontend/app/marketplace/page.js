@@ -83,6 +83,7 @@ const Marketplace = () => {
                 tokenId={ticket.tokenId}
                 collection={null}
                 shop={true}
+                buyings={false}
                 onBoughtItem={onBoughtItem}
                 onDeleteItem={() => null}
                 onMintedItem={() => null}

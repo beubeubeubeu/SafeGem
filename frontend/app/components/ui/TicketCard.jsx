@@ -4,7 +4,12 @@ import { FaEthereum } from "react-icons/fa";
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useEffect, useState, React } from 'react';
 import TicketPriceModal from '../modals/TicketPriceModal';
-import { useWriteContract, useAccount, useReadContract } from 'wagmi';
+import {
+  useAccount,
+  useReadContract,
+  useWriteContract,
+  useWaitForTransactionReceipt
+} from 'wagmi';
 import {
   safeTicketsAbi,
   marketplaceAbi,
@@ -13,7 +18,6 @@ import {
 } from '@/constants';
 import {
   weiToEth,
-  ethToWei,
   formatTokenId,
   getPinataImageUrl,
   timestampToHumanDate
@@ -38,17 +42,20 @@ import {
 } from '@chakra-ui/react';
 
 const TicketCard = ({
+  shop,
+  draft,
   index,
+  buyings,
   tokenId,
   cidJSON,
   cidImage,
-  draft,
-  shop,
   collection,
   onDeleteItem,
+  onBoughtItem,
   onMintedItem
 }) => {
 
+  const [waitForbuyingTransaction, setwaitForbuyingTransaction] = useState(false);
   const [fetchingMetadata, setFetchingMetadata] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [concertName, setConcertName] = useState('');
@@ -188,7 +195,7 @@ const TicketCard = ({
   };
 
   // Handle buy ticket
-  const { writeContract: buyTicket, isPending: isPendingBuyTicket, isLoading: isBuyingTicket } = useWriteContract({
+  const { data: buyingData, writeContract: buyTicket, isPending: isPendingBuyTicket, isLoading: isBuyingTicket } = useWriteContract({
     mutation: {
       onSuccess() {
         toast({
@@ -197,7 +204,7 @@ const TicketCard = ({
           duration: 5000,
           isClosable: true,
         });
-        onBoughtItem();
+        console.log("HERE IS BUYING DATA: ", buyingData);
       },
       onError(error) {
         const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
@@ -213,7 +220,14 @@ const TicketCard = ({
     }
   });
 
+  const {
+    isSuccess: isSuccessBuyingConfirmation,
+    isError: isErrorBuyingConfirmation,
+    isPending: isPendingBuyingConfirmation
+  } = useWaitForTransactionReceipt({hash: buyingData});
+
   const handleBuyTicket = () => {
+    setwaitForbuyingTransaction(true);
     buyTicket({
       address: marketplaceAddress,
       abi: marketplaceAbi,
@@ -223,6 +237,27 @@ const TicketCard = ({
       args: [tokenId]
     });
   };
+
+  useEffect(() => {
+    if(isSuccessBuyingConfirmation) {
+      console.log("ENTERED HERE 0")
+      setwaitForbuyingTransaction(false);
+      onBoughtItem();
+    } else if(isErrorBuyingConfirmation) {
+        console.log("ENTERED HERE 1")
+        toast({
+            title: "Error with buying ticket transaction.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+        });
+        setwaitForbuyingTransaction(false);
+    } else if(isPendingBuyingConfirmation) {
+        console.log("ENTERED HERE 2")
+    } else {
+      console.log("ENTERED HERE 3")
+    }
+}, [isPendingBuyingConfirmation, isSuccessBuyingConfirmation, isErrorBuyingConfirmation])
 
   return (
     <>
@@ -319,7 +354,7 @@ const TicketCard = ({
             </Button>
           ) : shop ? (
             <Button
-              isLoading={isPendingBuyTicket || isBuyingTicket}
+              isLoading={isPendingBuyTicket || isBuyingTicket || waitForbuyingTransaction}
               variant='ghost'
               colorScheme='yellow'
               onClick={handleBuyTicket}
@@ -345,6 +380,8 @@ const TicketCard = ({
                 UNSELL
               </Button>
             </>
+          ) : buyings ? (
+            <Box minHeight={"64px"}></Box>
           ) : (
             <Button
               isLoading={isPendingSetTicketOnsale || isSettingTicketOnsale}

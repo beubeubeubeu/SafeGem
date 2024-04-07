@@ -45,5 +45,8 @@ export function weiToEth(wei) {
 
 export function ethInDollar(eth) {
   const exchangeRate = 3300;
-  return (parseFloat(eth) * exchangeRate).toFixed(2); // Fixed to 2 decimal places
+  const value = parseFloat(eth) * exchangeRate;
+
+  // Use Intl.NumberFormat for formatting with commas
+  return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
 }
