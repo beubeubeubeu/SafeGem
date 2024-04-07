@@ -27,7 +27,7 @@ import {
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure()
 
-  const { address, isConnecting } = useAccount();
+  const { address, isConnecting, isDisconnected, isReconnecting } = useAccount();
 
   return (
     <Box>
@@ -66,28 +66,29 @@ export default function Navbar() {
         <Flex display={{ base: 'none', md: 'flex' }} >
           <DesktopNav />
         </Flex>
-        { isConnecting || !address ? (
-          <Flex alignItems={"center"} justifyContent={"center"} minW={{md: "422px"}} minH={{md: "40px"}}>
-            <Spinner color="gray.500" />
-          </Flex>
-        ) : (
-          <ConnectButton
-            accountStatus={{
-              smallScreen: 'avatar',
-              largeScreen: 'full',
-            }}
-
-            showBalance={{
-              smallScreen: false,
-              largeScreen: true,
-            }}
-
-            chainStatus={{
-              smallScreen: "none",
-              largeScreen: "full"
+        <Flex alignItems={(isDisconnected || address || !isConnecting || !isReconnecting) ? "flex-end" : "center"} justifyContent={(isDisconnected || address || !isConnecting || !isReconnecting) ? "flex-end" : "center"} minW={{md: "422px"}} minH={{md: "40px"}}>
+          { (isDisconnected || address || !isConnecting || !isReconnecting) ? (
+            <ConnectButton
+              accountStatus={{
+                smallScreen: 'avatar',
+                largeScreen: 'full',
               }}
-          />
-        )}
+
+              showBalance={{
+                smallScreen: false,
+                largeScreen: true,
+              }}
+
+              chainStatus={{
+                smallScreen: "none",
+                largeScreen: "full"
+                }}
+            />
+
+          ) : (
+            <Spinner color="gray.500" />
+          )}
+        </Flex>
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
