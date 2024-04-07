@@ -46,6 +46,10 @@ const Marketplace = () => {
     }
   };
 
+  const onBoughtItem = async () => {
+    await fetchTicketsData();
+  }
+
   return (
     <>
       <Heading textAlign={'center'}>Shop</Heading>
@@ -79,7 +83,7 @@ const Marketplace = () => {
                 tokenId={ticket.tokenId}
                 collection={null}
                 shop={true}
-                onBoughtItem={() => fetchTicketsData()}
+                onBoughtItem={onBoughtItem}
                 onDeleteItem={() => null}
                 onMintedItem={() => null}
               />

@@ -4,9 +4,9 @@ import { Heading, Box, Button, Flex, VStack, Image, Center } from '@chakra-ui/re
 const Home = () => {
   return (
     <>
-      <Box textAlign={'center'} mt={8}>
+      <Box textAlign={'center'}>
         <Flex direction={{ base: 'column', md: 'row' }} justify="center" align="center">
-          <VStack flex="2" spacing="24px" mr={{ base: '0', md: '18px' }}>
+          <VStack flex="2.5" spacing="24px" mr={{ base: '0', md: '18px' }}>
             <Heading as='h1' size='4xl'>Your tickets into NFT collections</Heading>
             <Link href='/collections' style={{ textDecoration: 'none' }}>
               <Button colorScheme='yellow' size={'lg'}>Start Collecting Now</Button>
