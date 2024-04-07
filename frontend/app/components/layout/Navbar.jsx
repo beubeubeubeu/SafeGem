@@ -10,12 +10,13 @@ import {
   Text,
   Icon,
   Stack,
+  Center,
   Heading,
+  Spinner,
   Collapse,
   IconButton,
   useDisclosure,
-  useColorModeValue,
-  useBreakpointValue,
+  useColorModeValue
 } from '@chakra-ui/react'
 import {
   HamburgerIcon,
@@ -38,8 +39,8 @@ export default function Navbar() {
         borderStyle={'solid'}
         borderColor={useColorModeValue('teal.200', 'teal.900')}
         pb={'24px'}
-        mb={8}
-        align={'center'}>
+        mb={{ base: 0, md: 12}}
+      >
         <Flex
           flex={{ base: 1, md: 'auto' }}
           ml={{ base: -2 }}
@@ -56,32 +57,37 @@ export default function Navbar() {
         <Flex flex={{ base: 1 }} justifyContent={{ base: 'center', md: 'start' }}>
           <Link href='/'>
             <Heading
-
               fontFamily={'heading'}
               color={useColorModeValue('gray.800', 'white')}>
               SafeTickets
             </Heading>
           </Link>
         </Flex>
-        <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+        <Flex display={{ base: 'none', md: 'flex' }} >
           <DesktopNav />
         </Flex>
-        <ConnectButton
-          accountStatus={{
-            smallScreen: 'avatar',
-            largeScreen: 'full',
-          }}
-
-          showBalance={{
-            smallScreen: false,
-            largeScreen: true,
-          }}
-
-          chainStatus={{
-            smallScreen: "none",
-            largeScreen: "full"
+        { isConnecting || !address ? (
+          <Flex alignItems={"center"} justifyContent={"center"} minW={{md: "422px"}} minH={{md: "40px"}}>
+            <Spinner color="gray.500" />
+          </Flex>
+        ) : (
+          <ConnectButton
+            accountStatus={{
+              smallScreen: 'avatar',
+              largeScreen: 'full',
             }}
-        />
+
+            showBalance={{
+              smallScreen: false,
+              largeScreen: true,
+            }}
+
+            chainStatus={{
+              smallScreen: "none",
+              largeScreen: "full"
+              }}
+          />
+        )}
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>

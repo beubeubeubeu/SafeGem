@@ -4,7 +4,7 @@ import Layout from './components/layout/Layout';
 
 export const metadata = {
   title: "SafeTickets",
-  description: "Your tickets as gold"
+  description: "Your tickets are gold."
 };
 
 export default function RootLayout({ children }) {
