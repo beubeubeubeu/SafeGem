@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useAccount } from 'wagmi';
-import { usePathname } from 'next/navigation'
+import React, { forwardRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import {
   Box,
@@ -23,13 +24,13 @@ import {
   ChevronDownIcon,
 } from '@chakra-ui/icons'
 
-export default function Navbar() {
+const Navbar = forwardRef((props, ref) => {
   const { isOpen, onToggle } = useDisclosure()
 
   const { address, isConnecting, isDisconnected, isReconnecting } = useAccount();
 
   return (
-    <Box>
+    <Box ref={ref}>
       <Flex
         minH={'60px'}
         py={{ base: 2 }}
@@ -95,7 +96,7 @@ export default function Navbar() {
       </Collapse>
     </Box>
   )
-}
+})
 
 const DesktopNav = () => {
 
@@ -200,3 +201,5 @@ const NAV_ITEMS = [
     href: '/buyings',
   }
 ]
+
+export default Navbar;
