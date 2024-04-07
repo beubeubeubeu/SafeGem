@@ -38,7 +38,7 @@ export function ethToWei(eth) {
 
 export function weiToEth(wei) {
   // Use ethers.js utility function to convert wei to ether
-  const eth = ethers.formatEther(wei);
+  const eth = ethers.formatEther(wei.toString());
   // Format the result to 2 decimal places
   return Number.parseFloat(eth).toFixed(2);
 }

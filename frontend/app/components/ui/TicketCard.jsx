@@ -318,18 +318,18 @@ const TicketCard = ({
               <Text>
                 {fetchingMetadata ? <Spinner color="gray.200"></Spinner> : timestampToHumanDate(date)}
               </Text>
-                {fetchingMetadata ? (
-                  <Spinner color="gray.200" />
-                ) : (
-                  price && onSale && (
-                    <HStack spacing={2}>
-                      <Text fontWeight={'bold'} fontFamily={'mono'}>
-                        {weiToEth(price)}
-                      </Text>
-                      <FaEthereum marginRight={0}/>
-                    </HStack>
-                  )
-                )}
+              {fetchingMetadata ? (
+                <Spinner color="gray.200" />
+              ) : (
+                price && onSale && (
+                  <HStack spacing={2}>
+                    <Text fontWeight={'bold'} fontFamily={'mono'}>
+                      {weiToEth(price)}
+                    </Text>
+                    <FaEthereum marginRight={0}/>
+                  </HStack>
+                )
+              )}
             </HStack>
           </Stack>
         </CardBody>

@@ -31,7 +31,7 @@ const Layout = ({ children }) => {
     >
       <Navbar ref={firstElementRef}/>
       {
-        ((!address || isDisconnected) && pathname !== '/' && !isReconnecting && !isConnecting && !isLoading) ?
+        ((!address || isDisconnected) && pathname !== '/' && !isLoading) ?
         (<PleaseConnectBox />) : ((isConnecting || isReconnecting) && !isLoading && isDisconnected) ?
         (<Center><Spinner color='gray.500'></Spinner></Center>) : children
       }

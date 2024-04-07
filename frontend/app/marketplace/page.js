@@ -1,31 +1,46 @@
 'use client'
 
-import { useAccount } from 'wagmi';
 import { React, useEffect, useState } from 'react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import TicketCard from '../components/ui/TicketCard';
-import EmptyStateBox from '../components/ui/EmptyStateBox';
-import LoadingTicketCard from '../components/ui/LoadingTicketCard';
+import MarketplaceEvents from '../components/ui/MarketplaceEvents';
+import MarketplaceTickets from '../components/ui/MarketplaceTickets';
+import MarketplaceBalanceWithdraw from '../components/ui/MarketplaceBalanceWithdraw';
+import {
+  useAccount,
+  useWriteContract,
+  useWaitForTransactionReceipt
+} from 'wagmi';
+import {
+  marketplaceAbi,
+  marketplaceAddress
+} from '@/constants';
 import {
   Box,
+  Tab,
   Text,
-  Flex,
   Link,
+  Tabs,
   Badge,
   Center,
   Heading,
+  TabList,
   Divider,
-  GridItem,
-  Skeleton,
-  SimpleGrid
+  TabPanel,
+  TabPanels,
+  TabIndicator,
 } from '@chakra-ui/react';
 
 const Marketplace = () => {
 
   const address = useAccount().address
 
+  const [waitForWithdrawingTransaction, setWaitForWithdrawingTransaction] = useState(false);
   const [fetchingTicketsData, setFetchingTicketsData] = useState(true);
+  const [fetchingUserBalance, setFetchingUserBalance] = useState(true);
+  const [isFetchingEvents, setIsFetchingEvents] = useState(true);
+  const [userBalance, setUserBalance] = useState('');
   const [tickets, setTickets] = useState([]);
+  const [events, setEvents] = useState([]);
 
   // Fetch selling ticket data (on sale)
   useEffect(() => {
@@ -61,6 +76,117 @@ const Marketplace = () => {
     await fetchTicketsData();
   }
 
+  // Get user's balance on contract marketplace
+  const fetchUserBalance = async () => {
+    try {
+      setFetchingUserBalance(true);
+      const response = await fetch(`/api/users/balance?address=${address}`, {
+        method: 'GET', // Explicitly state the method, even if GET is the default
+        headers: {
+          'Cache-Control': 'no-cache', // Advises the browser and intermediate caches to get a fresh version
+        },
+        cache: 'no-store', // Ensures the response isn’t stored in any caches
+      });
+      const balance = await response.json();
+      setUserBalance(balance.data);
+      setFetchingUserBalance(false);
+    } catch (error) {
+      console.error("Failed to fetch user balance:", error);
+      setFetchingUserBalance(false);
+    }
+  };
+
+  useEffect(() => {
+    const getUserBalance = async () => {
+      if (address !== undefined) {
+        await fetchUserBalance();
+      }
+    }
+    getUserBalance();
+  }, [address])
+
+  // Withdraw eth
+  const { data: withdrawingData, writeContract: withdrawBalance, isPending: isPendingWithdrawBalance, isLoading: isWithdrawingBalance } = useWriteContract({
+    mutation: {
+      onSuccess() {
+        toast({
+          title: "Funds withdrawed. 💸",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        fetchUserBalance();
+      },
+      onError(error) {
+        const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
+        const match = error.message.match(pattern);
+        toast({
+          title: "Failed to withdraw funds.",
+          description: match[1] || error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    }
+  });
+
+  const handleWithdrawBalance = () => {
+    setWaitForWithdrawingTransaction(true);
+    withdrawBalance({
+      address: marketplaceAddress,
+      abi: marketplaceAbi,
+      functionName: "withdraw",
+      account: address,
+      args: [userBalance]
+    });
+  };
+
+  const {
+    isSuccess: isSuccessWithdrawingConfirmation,
+    isError: isErrorWithdrawingConfirmation,
+    isPending: isPendingWithdrawingBonfirmation
+  } = useWaitForTransactionReceipt({hash: withdrawingData});
+
+  useEffect(() => {
+    const setWithdrawingState = async () => {
+      if(isSuccessWithdrawingConfirmation) {
+        setWaitForWithdrawingTransaction(false);
+        await fetchUserBalance();
+      } else if(isErrorWithdrawingConfirmation) {
+          toast({
+              title: "Error with withdrawing transaction.",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+          });
+          setWaitForWithdrawingTransaction(false);
+          await fetchUserBalance();
+      } else if (isPendingWithdrawingBonfirmation && waitForWithdrawingTransaction) {
+        setWaitForWithdrawingTransaction(true);
+      }
+    }
+    setWithdrawingState();
+  }, [isPendingWithdrawingBonfirmation, isSuccessWithdrawingConfirmation, isErrorWithdrawingConfirmation])
+
+  // Get marketplace events
+  const getEvents = async () => {
+    setIsFetchingEvents(true);
+    const response = await fetch(`/api/marketplace/events`);
+    const eventsData = await response.json();
+    setEvents(eventsData.data);
+    setIsFetchingEvents(false);
+  }
+
+  useEffect(() => {
+    const getAllEvents = async () => {
+      if (address !== undefined) {
+          await getEvents();
+      }
+    }
+    getAllEvents();
+  }, [address])
+
   return (
     <>
       <Heading mt={{sm: "32px", md: "0px"}} textAlign={'center'}>Marketplace</Heading>
@@ -73,52 +199,44 @@ const Marketplace = () => {
 
       <Divider my={5} border={'none'}></Divider>
 
-      { !fetchingTicketsData && tickets.length === 0 && (
-        <EmptyStateBox
-          title='No tickets for sale'
-          line1='Create a collection then'
-          line2='mint and sell your precious tickets.'
+      <Tabs defaultIndex={0} variant="unstyled" colorScheme='teal' size='sm' align='center'>
+        <TabList>
+          <Tab>Tickets</Tab>
+          <Tab>Balance / Withdraw</Tab>
+          <Tab>Events</Tab>
+        </TabList>
+        <TabIndicator
+          mb="8px"
+          height="2px"
+          bg="teal"
+          borderRadius="1px"
         />
-      )}
-
-      <Flex
-        direction="column"
-        align="center"
-        justify="center" // This centers the content vertically in the Flex container
-        >
-
-
-        <SimpleGrid
-          columns={{ base: 1, md: 3 }}
-          spacing="32px"
-        >
-          {/* Empty state */}
-          { fetchingTicketsData && [...Array(3)].map((_, index) => (
-            <GridItem key={index}>
-              <LoadingTicketCard/>
-            </GridItem>
-          ))}
-
-          {/* Loop over tickets to generate Ticket Cards, wrapped with GridItem */}
-          { !fetchingTicketsData && tickets.length > 0 && tickets.map((ticket, index) => (
-            <GridItem key={index}>
-              <TicketCard
-                index={index}
-                cidJSON={ticket.cidJSON}
-                cidImage={ticket.cidImage}
-                draft={false}
-                tokenId={ticket.tokenId}
-                collection={null}
-                marketplace={true}
-                buyings={false}
-                onBoughtItem={onBoughtItem}
-                onDeleteItem={() => null}
-                onMintedItem={() => null}
-              />
-            </GridItem>
-          ))}
-        </SimpleGrid>
-      </Flex>
+        <TabPanels>
+          <TabPanel>
+            <MarketplaceTickets
+              fetchingTicketsData={fetchingTicketsData}
+              tickets={tickets}
+              onBoughtItem={onBoughtItem}
+            />
+          </TabPanel>
+          <TabPanel>
+            <MarketplaceBalanceWithdraw
+              fetchingUserBalance={fetchingUserBalance}
+              userBalance={userBalance}
+              waitForWithdrawingTransaction={waitForWithdrawingTransaction}
+              isPendingWithdrawBalance={isPendingWithdrawBalance}
+              isWithdrawingBalance={isWithdrawingBalance}
+              handleWithdrawBalance={handleWithdrawBalance}
+            />
+          </TabPanel>
+          <TabPanel>
+            <MarketplaceEvents
+              isFetchingEvents={isFetchingEvents}
+              events={events}
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </>
   )
 }
