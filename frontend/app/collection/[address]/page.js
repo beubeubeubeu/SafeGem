@@ -4,6 +4,7 @@ import { useAccount } from 'wagmi';
 import { useSearchParams } from 'next/navigation';
 import { React, useState, useEffect } from 'react';
 import TicketCard from '../../components/ui/TicketCard';
+import EmptyTicketCard from '../../components/ui/EmptyTicketCard';
 import NewTicketDraftCard from '../../components/ui/NewTicketDraftCard';
 import {
   Box,
@@ -25,6 +26,7 @@ const Collection = ({ params }) => {
   const { address } = useAccount();
   const [tickets, setTickets] = useState([]);
   const [collection, setCollection] = useState('');
+  const [isLoadingTickets, setIsLoadingTickets] = useState(true);
 
   useEffect(() => {
     setCollection(params.address);
@@ -36,11 +38,13 @@ const Collection = ({ params }) => {
 
   const getTickets = async () => {
     // get drafts
+    setIsLoadingTickets(true);
     let draftTickets = [];
     try {
       draftTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[params.address] || []
     } catch (e) {
       console.error("Failed to fetch ticket drafts:", e);
+      setIsLoadingTickets(false);
       draftTickets = [];
     }
     // get minted tickets
@@ -48,8 +52,10 @@ const Collection = ({ params }) => {
       const response = await fetch(`/api/tickets/of_owner?address=${params.address}`);
       const mintedTickets = await response.json();
       setTickets([...draftTickets, ...mintedTickets.data]);
+      setIsLoadingTickets(false);
     } catch (e) {
       console.error("Failed to fetch tickets:", e);
+      setIsLoadingTickets(false);
     }
   }
 
@@ -103,6 +109,13 @@ const Collection = ({ params }) => {
           <GridItem>
             <NewTicketDraftCard onSuccessCreateDraftTicket={onSuccessCreateDraftTicket} collection={params.address}></NewTicketDraftCard>
           </GridItem>
+
+          {/* Empty state */}
+          { isLoadingTickets && [...Array(3)].map((_, index) => (
+            <GridItem key={index}>
+              <EmptyTicketCard/>
+            </GridItem>
+          ))}
 
           {/* Loop over tickets to generate Ticket Cards, wrapped with GridItem */}
           { collection && tickets.length > 0 && tickets.map((ticket, index) => (

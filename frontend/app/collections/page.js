@@ -8,13 +8,16 @@ import { userCollectionFactoryAddress} from '@/constants';
 import CollectionCard from '../components/ui/CollectionCard';
 import { Flex, SimpleGrid, GridItem } from '@chakra-ui/react';
 import NewCollectionCard from '../components/ui/NewCollectionCard';
+import EmptyCollectionCard from '../components/ui/EmptyCollectionCard';
 
 const Collections = () => {
 
   const { address } = useAccount();
   const [userCollections, setUserCollections] = useState();
+  const [fetchingUserCollections, setFetchingUserCollections] = useState(true);
 
   const getUserCollections = async () => {
+    setFetchingUserCollections(true);
     const tmpUserCollections = []
     const userCollectionCreatedEvents = await publicClient.getLogs({
       address: userCollectionFactoryAddress,
@@ -32,6 +35,7 @@ const Collections = () => {
         })
       })
     setUserCollections(tmpUserCollections);
+    setFetchingUserCollections(false);
   }
 
   useEffect(() => {
@@ -58,6 +62,13 @@ const Collections = () => {
           <GridItem>
             <NewCollectionCard onSuccessCreateCollection={getUserCollections} />
           </GridItem>
+
+          {/* Empty state */}
+          { fetchingUserCollections && [...Array(4)].map((_, index) => (
+            <GridItem key={index}>
+              <EmptyCollectionCard/>
+            </GridItem>
+          ))}
 
           {/* Loop over userCollections to generate Collection Cards, wrapped with GridItem */}
           {userCollections && userCollections.map((collection, index) => (

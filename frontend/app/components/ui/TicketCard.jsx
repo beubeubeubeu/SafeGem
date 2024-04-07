@@ -204,7 +204,6 @@ const TicketCard = ({
           duration: 5000,
           isClosable: true,
         });
-        console.log("HERE IS BUYING DATA: ", buyingData);
       },
       onError(error) {
         const pattern = /Error: ([A-Za-z0-9_]+)\(\)/;
@@ -240,11 +239,9 @@ const TicketCard = ({
 
   useEffect(() => {
     if(isSuccessBuyingConfirmation) {
-      console.log("ENTERED HERE 0")
       setwaitForbuyingTransaction(false);
       onBoughtItem();
     } else if(isErrorBuyingConfirmation) {
-        console.log("ENTERED HERE 1")
         toast({
             title: "Error with buying ticket transaction.",
             status: "error",
@@ -252,12 +249,8 @@ const TicketCard = ({
             isClosable: true,
         });
         setwaitForbuyingTransaction(false);
-    } else if(isPendingBuyingConfirmation) {
-        console.log("ENTERED HERE 2")
-    } else {
-      console.log("ENTERED HERE 3")
     }
-}, [isPendingBuyingConfirmation, isSuccessBuyingConfirmation, isErrorBuyingConfirmation])
+  }, [isPendingBuyingConfirmation, isSuccessBuyingConfirmation, isErrorBuyingConfirmation])
 
   return (
     <>

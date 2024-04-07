@@ -3,11 +3,11 @@
 import { useAccount } from 'wagmi';
 import { React, useState, useEffect } from 'react';
 import TicketCard from '../components/ui/TicketCard';
+import EmptyTicketCard from '../components/ui/EmptyTicketCard';
 import {
   Box,
   Text,
   Flex,
-  Badge,
   Center,
   Heading,
   Divider,
@@ -19,14 +19,18 @@ const Buyings = ({ params }) => {
 
   const { address } = useAccount();
   const [tickets, setTickets] = useState([]);
+  const [isLoadingTickets, setIsLoadingTickets] = useState(true);
 
   const getTickets = async () => {
     // get minted tickets
     try {
+      setIsLoadingTickets(true);
       const response = await fetch(`/api/tickets/of_owner?address=${address}`);
       const mintedTickets = await response.json();
       setTickets(mintedTickets.data);
+      setIsLoadingTickets(false);
     } catch (e) {
+      setIsLoadingTickets(false);
       console.error("Failed to fetch tickets:", e);
     }
   }
@@ -61,6 +65,14 @@ const Buyings = ({ params }) => {
           columns={{ base: 1, md: 3 }}
           spacing="32px"
         >
+
+          {/* Empty state */}
+          { isLoadingTickets && [...Array(3)].map((_, index) => (
+            <GridItem key={index}>
+              <EmptyTicketCard/>
+            </GridItem>
+          ))}
+
           {/* Loop over tickets to generate Ticket Cards, wrapped with GridItem */}
           { address && tickets.length > 0 && tickets.map((ticket, index) => (
             <GridItem key={index}>
