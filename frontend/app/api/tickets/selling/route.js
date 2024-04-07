@@ -24,6 +24,7 @@ export async function GET(request) {
     })
 
     let ticketsOnSale = [];
+    console.log("totaleSupply", totalSupply)
 
     for (let i = 0; i < totalSupply; i++) {
       const ticketSellingInfo = await publicClient.readContract({
@@ -53,8 +54,7 @@ export async function GET(request) {
       })
       return { ...ticket, cidImage, cidJSON };
     }));
-
-    return NextResponse.json( ticketsWithCIDs );
+    return NextResponse.json(ticketsWithCIDs, { status: 200 });
   } catch (e) {
     console.log(e);
     return NextResponse.json(

@@ -70,9 +70,6 @@ const TicketPriceModal = ({isOpen, onClose, tokenId, onPriceSet}) => {
   });
 
   const handleSetTicketPrice = () => {
-    console.log("tokenId", tokenId);
-    console.log(priceInWei);
-    console.log(address);
     setTicketPrice({
       address: marketplaceAddress,
       abi: marketplaceAbi,

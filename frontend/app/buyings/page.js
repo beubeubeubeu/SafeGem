@@ -1,14 +1,12 @@
 'use client'
 
 import { useAccount } from 'wagmi';
-import { React, useEffect, useState } from 'react';
-import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { React, useState, useEffect } from 'react';
 import TicketCard from '../components/ui/TicketCard';
 import {
   Box,
   Text,
   Flex,
-  Link,
   Badge,
   Center,
   Heading,
@@ -17,42 +15,38 @@ import {
   SimpleGrid
 } from '@chakra-ui/react';
 
-const Marketplace = () => {
+const Buyings = ({ params }) => {
 
-  const address = useAccount().address
-
-  const [fetchingTicketsData, setFetchingTicketsData] = useState(true);
+  const { address } = useAccount();
   const [tickets, setTickets] = useState([]);
 
-  // Fetch selling ticket data (on sale)
+  const getTickets = async () => {
+    // get minted tickets
+    try {
+      const response = await fetch(`/api/tickets/of_owner?address=${address}`);
+      const mintedTickets = await response.json();
+      setTickets(mintedTickets);
+    } catch (e) {
+      console.error("Failed to fetch tickets:", e);
+    }
+  }
+
   useEffect(() => {
     const getAllTickets = async () => {
       if (address !== undefined) {
-        await fetchTicketsData();
+        await getTickets();
       }
     }
     getAllTickets();
   }, [address])
 
-  const fetchTicketsData = async () => {
-    try {
-      setFetchingTicketsData(true);
-      const response = await fetch(`/api/tickets/selling`);
-      const onSaleTickets = await response.json();
-      setTickets(onSaleTickets);
-      setFetchingTicketsData(false);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
-  };
-
   return (
     <>
-      <Heading textAlign={'center'}>Shop</Heading>
+      <Heading textAlign={'center'}>Buyings</Heading>
       <Center>
         <Box mx={5} maxWidth={'500px'}>
           <Divider my={5} border={'none'}></Divider>
-          <Text textAlign={'center'} fontSize='sm'>After buying a ticket it will appear in your <Link href="/buyings"><Badge colorScheme='teal'>Buyings<ExternalLinkIcon mb='3px' mx='2px' /></Badge></Link> page</Text>
+          <Text textAlign={'center'} fontSize='sm'></Text>
         </Box>
       </Center>
 
@@ -67,19 +61,18 @@ const Marketplace = () => {
           columns={{ base: 1, md: 3 }}
           spacing="32px"
         >
-
           {/* Loop over tickets to generate Ticket Cards, wrapped with GridItem */}
-          { !fetchingTicketsData && tickets.length > 0 && tickets.map((ticket, index) => (
+          { address && tickets.length > 0 && tickets.map((ticket, index) => (
             <GridItem key={index}>
               <TicketCard
                 index={index}
                 cidJSON={ticket.cidJSON}
                 cidImage={ticket.cidImage}
                 draft={false}
+                shop={false}
                 tokenId={ticket.tokenId}
-                collection={null}
-                shop={true}
-                onBoughtItem={() => fetchTicketsData()}
+                collection={address}
+                onBoughtItem={() => null}
                 onDeleteItem={() => null}
                 onMintedItem={() => null}
               />
@@ -91,4 +84,4 @@ const Marketplace = () => {
   )
 }
 
-export default Marketplace
+export default Buyings

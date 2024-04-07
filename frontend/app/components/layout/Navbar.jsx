@@ -188,5 +188,9 @@ const NAV_ITEMS = [
   {
     label: 'My Collections',
     href: '/collections',
+  },
+  {
+    label: 'Buyings',
+    href: '/buyings',
   }
 ]

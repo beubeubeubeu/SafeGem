@@ -7,9 +7,8 @@ import Footer from './Footer'
 const Layout = ({ children }) => {
   return (
     <Flex
-      px={{ base: 0, md: '12px', lg: '64px', xl: '256px' }}
+      px={{ base: 0, md: '12px', lg: '64px', xl: '128px' }}
       backgroundColor="gray.100"
-      // backgroundColor="blue.100"
       direction="column"
       minH="100vh"
       py="2rem"

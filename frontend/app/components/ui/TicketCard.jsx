@@ -214,7 +214,6 @@ const TicketCard = ({
   });
 
   const handleBuyTicket = () => {
-    console.log("tokenId", tokenId);
     buyTicket({
       address: marketplaceAddress,
       abi: marketplaceAbi,

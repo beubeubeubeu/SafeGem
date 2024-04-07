@@ -1,15 +1,10 @@
 'use client'
 
 import { useAccount } from 'wagmi';
-import { parseAbiItem } from 'viem';
-import { publicClient } from '@/lib/client';
 import { useSearchParams } from 'next/navigation';
 import { React, useState, useEffect } from 'react';
 import TicketCard from '../../components/ui/TicketCard';
 import NewTicketDraftCard from '../../components/ui/NewTicketDraftCard';
-import {
-  safeTicketsAddress
-} from '@/constants';
 import {
   Box,
   Text,
@@ -33,7 +28,7 @@ const Collection = ({ params }) => {
 
   useEffect(() => {
     setCollection(params.address);
-  }, [params.address]);
+  }, []);
 
   const onSuccessCreateDraftTicket = () => {
     getTickets();
@@ -43,16 +38,15 @@ const Collection = ({ params }) => {
     // get drafts
     let draftTickets = [];
     try {
-      draftTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[collection] || []
+      draftTickets = JSON.parse(localStorage.getItem('ticketDrafts'))[params.address] || []
     } catch (e) {
       console.error("Failed to fetch ticket drafts:", e);
       draftTickets = [];
     }
     // get minted tickets
     try {
-      const response = await fetch(`/api/tickets/of_owner?address=${collection}`);
+      const response = await fetch(`/api/tickets/of_owner?address=${params.address}`);
       const mintedTickets = await response.json();
-      console.log("mintedTickets", mintedTickets)
       setTickets([...draftTickets, ...mintedTickets]);
     } catch (e) {
       console.error("Failed to fetch tickets:", e);
@@ -61,12 +55,12 @@ const Collection = ({ params }) => {
 
   useEffect(() => {
     const getAllTickets = async () => {
-      if (address !== undefined && collection !== undefined) {
-          await getTickets();
+      if (address !== undefined) {
+        await getTickets();
       }
     }
     getAllTickets();
-  }, [address, collection])
+  }, [address])
 
   const handleDeleteItem = async (index) => {
     // Retrieve the current drafts array from local storage and parse it
@@ -82,7 +76,7 @@ const Collection = ({ params }) => {
 
   const handleMintedItem = async (index) => {
     handleDeleteItem(index);
-    getTickets();
+    await getTickets();
   }
 
   return (

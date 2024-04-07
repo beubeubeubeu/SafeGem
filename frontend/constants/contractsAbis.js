@@ -1,4 +1,4 @@
-export const marketplaceAbi = [
+export const marketplaceAbi =  [
   {
     "inputs": [
       {
