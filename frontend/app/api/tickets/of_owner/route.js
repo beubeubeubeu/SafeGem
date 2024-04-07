@@ -1,4 +1,3 @@
-import { formatEther } from 'viem'
 import { NextResponse } from "next/server";
 import { publicClient } from '@/lib/client';
 import { safeTicketsAbi } from '@/constants';
@@ -19,6 +18,7 @@ export async function GET(request) {
       ...safeTicketsContractConfig,
       functionName: 'balanceOf',
       args: [ownerAddress],
+      blockTag: 'safe'
     });
 
     const n = balanceOfOwner;
@@ -30,6 +30,7 @@ export async function GET(request) {
         ...safeTicketsContractConfig,
         functionName: 'tokenOfOwnerByIndex',
         args: [ownerAddress, index],
+        blockTag: 'safe'
       });
       ownedTokenIds.push(Number(tokenId));
     }
@@ -39,16 +40,18 @@ export async function GET(request) {
       const cidImage = await publicClient.readContract({
         ...safeTicketsContractConfig,
         functionName: 'tokenImageCids',
-        args: [tokenId]
+        args: [tokenId],
+        blockTag: 'safe'
       });
       const cidJSON = await publicClient.readContract({
         ...safeTicketsContractConfig,
         functionName: 'tokenJsonCids',
         args: [tokenId],
+        blockTag: 'safe'
       });
       return { tokenId, cidImage, cidJSON };
     }));
-    return NextResponse.json( ticketsWithCIDs, { status: 200 });
+    return NextResponse.json({ data: ticketsWithCIDs }, { status: 200 });
   } catch (e) {
     console.log(e);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

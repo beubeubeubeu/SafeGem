@@ -21,15 +21,17 @@ export async function GET(request) {
     const totalSupply = await publicClient.readContract({
       ...safeTicketsContractConfig,
       functionName: 'totalSupply',
+      blockTag: 'safe'
     })
 
     let ticketsOnSale = [];
-    console.log("totaleSupply", totalSupply)
+    console.log("totalSupply: ", totalSupply)
 
     for (let i = 0; i < totalSupply; i++) {
       const ticketSellingInfo = await publicClient.readContract({
         ...marketPlaceContractConfig,
         functionName: 'ticketSelling',
+        blockTag: 'safe',
         args: [i]
       })
       if (
@@ -45,16 +47,18 @@ export async function GET(request) {
       const cidImage = await publicClient.readContract({
         ...safeTicketsContractConfig,
         functionName: 'tokenImageCids',
+        blockTag: 'safe',
         args: [ticket.tokenId]
       })
       const cidJSON = await publicClient.readContract({
         ...safeTicketsContractConfig,
         functionName: 'tokenJsonCids',
+        blockTag: 'safe',
         args: [ticket.tokenId]
       })
       return { ...ticket, cidImage, cidJSON };
     }));
-    return NextResponse.json(ticketsWithCIDs, { status: 200 });
+    return NextResponse.json({ data: ticketsWithCIDs }, { status: 200 });
   } catch (e) {
     console.log(e);
     return NextResponse.json(

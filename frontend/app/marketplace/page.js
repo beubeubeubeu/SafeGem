@@ -39,7 +39,7 @@ const Marketplace = () => {
       setFetchingTicketsData(true);
       const response = await fetch(`/api/tickets/selling`);
       const onSaleTickets = await response.json();
-      setTickets(onSaleTickets);
+      setTickets(onSaleTickets.data);
       setFetchingTicketsData(false);
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -52,7 +52,7 @@ const Marketplace = () => {
 
   return (
     <>
-      <Heading textAlign={'center'}>Shop</Heading>
+      <Heading mt={"32px"}textAlign={'center'}>Shop</Heading>
       <Center>
         <Box mx={5} maxWidth={'500px'}>
           <Divider my={5} border={'none'}></Divider>

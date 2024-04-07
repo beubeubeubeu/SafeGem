@@ -47,7 +47,7 @@ const Collection = ({ params }) => {
     try {
       const response = await fetch(`/api/tickets/of_owner?address=${params.address}`);
       const mintedTickets = await response.json();
-      setTickets([...draftTickets, ...mintedTickets]);
+      setTickets([...draftTickets, ...mintedTickets.data]);
     } catch (e) {
       console.error("Failed to fetch tickets:", e);
     }

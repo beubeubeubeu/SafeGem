@@ -25,7 +25,7 @@ const Buyings = ({ params }) => {
     try {
       const response = await fetch(`/api/tickets/of_owner?address=${address}`);
       const mintedTickets = await response.json();
-      setTickets(mintedTickets);
+      setTickets(mintedTickets.data);
     } catch (e) {
       console.error("Failed to fetch tickets:", e);
     }
@@ -42,7 +42,7 @@ const Buyings = ({ params }) => {
 
   return (
     <>
-      <Heading textAlign={'center'}>Buyings</Heading>
+      <Heading mt={"32px"} textAlign={'center'}>Buyings</Heading>
       <Center>
         <Box mx={5} maxWidth={'500px'}>
           <Divider my={5} border={'none'}></Divider>

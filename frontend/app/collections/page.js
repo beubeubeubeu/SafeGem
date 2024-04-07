@@ -46,6 +46,7 @@ const Collections = () => {
   return (
     <>
       <Flex
+        mt={"32px"}
         direction="column"
         align="center"
         justify="center" // This centers the content vertically in the Flex container
