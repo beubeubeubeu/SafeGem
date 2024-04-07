@@ -10,7 +10,7 @@ import {
   hardhat,
   sepolia
 } from 'wagmi/chains';
-import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { getDefaultConfig, RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 
 const config = getDefaultConfig({
   appName: 'SafeTickets',
@@ -27,11 +27,19 @@ export default function Providers({ children }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
-        <RainbowKitProvider coolMode={true}>
-          <ChakraProvider theme={theme}>
+        <ChakraProvider theme={theme}>
+          <RainbowKitProvider
+            coolMode={true}
+            theme={
+              lightTheme({
+                accentColor: 'teal',
+                fontStack: 'system'
+              })
+            }
+          >
             {children}
-          </ChakraProvider>
-        </RainbowKitProvider>
+          </RainbowKitProvider>
+        </ChakraProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

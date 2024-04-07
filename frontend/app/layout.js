@@ -1,10 +1,9 @@
 import Providers from "./providers";
-import { Flex } from "@chakra-ui/react";
 import Layout from './components/layout/Layout';
 
 export const metadata = {
   title: "SafeTickets",
-  description: "Your tickets are gold."
+  description: "Your tickets are gold"
 };
 
 export default function RootLayout({ children }) {

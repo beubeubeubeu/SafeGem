@@ -4,7 +4,7 @@ import { useAccount } from 'wagmi';
 import { useSearchParams } from 'next/navigation';
 import { React, useState, useEffect } from 'react';
 import TicketCard from '../../components/ui/TicketCard';
-import EmptyTicketCard from '../../components/ui/EmptyTicketCard';
+import LoadingTicketCard from '../../components/ui/LoadingTicketCard';
 import NewTicketDraftCard from '../../components/ui/NewTicketDraftCard';
 import {
   Box,
@@ -113,7 +113,7 @@ const Collection = ({ params }) => {
           {/* Empty state */}
           { isLoadingTickets && [...Array(3)].map((_, index) => (
             <GridItem key={index}>
-              <EmptyTicketCard/>
+              <LoadingTicketCard/>
             </GridItem>
           ))}
 

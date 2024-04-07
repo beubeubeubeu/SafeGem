@@ -249,6 +249,8 @@ const TicketCard = ({
             isClosable: true,
         });
         setwaitForbuyingTransaction(false);
+    } else if (isPendingBuyingConfirmation && waitForbuyingTransaction) {
+      setwaitForbuyingTransaction(true);
     }
   }, [isPendingBuyingConfirmation, isSuccessBuyingConfirmation, isErrorBuyingConfirmation])
 

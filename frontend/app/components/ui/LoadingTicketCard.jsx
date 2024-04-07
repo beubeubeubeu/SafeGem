@@ -1,4 +1,4 @@
-/** EmptyTicketCard.js */
+/** LoadingTicketCard.js */
 import { keyframes } from '@emotion/react';
 import { Box } from '@chakra-ui/react';
 
@@ -15,7 +15,7 @@ const animatedGradient = keyframes`
   }
 `;
 
-const EmptyTicketCard = () => (
+const LoadingTicketCard = () => (
   <Box
     height="443px" // Match the TicketCard height
     width="258px" // Match the TicketCard width
@@ -29,4 +29,4 @@ const EmptyTicketCard = () => (
   />
 );
 
-export default EmptyTicketCard;
+export default LoadingTicketCard;

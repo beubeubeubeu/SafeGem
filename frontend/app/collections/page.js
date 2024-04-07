@@ -7,7 +7,7 @@ import { React, useEffect, useState } from 'react';
 import { userCollectionFactoryAddress} from '@/constants';
 import CollectionCard from '../components/ui/CollectionCard';
 import NewCollectionCard from '../components/ui/NewCollectionCard';
-import EmptyCollectionCard from '../components/ui/EmptyCollectionCard';
+import LoadingCollectionCard from '../components/ui/LoadingCollectionCard';
 import {
   Box,
   Flex,
@@ -82,7 +82,7 @@ const Collections = () => {
           {/* Empty state */}
           { fetchingUserCollections && [...Array(4)].map((_, index) => (
             <GridItem key={index}>
-              <EmptyCollectionCard/>
+              <LoadingCollectionCard/>
             </GridItem>
           ))}
 

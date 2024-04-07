@@ -3,7 +3,8 @@
 import { useAccount } from 'wagmi';
 import { React, useState, useEffect } from 'react';
 import TicketCard from '../components/ui/TicketCard';
-import EmptyTicketCard from '../components/ui/EmptyTicketCard';
+import EmptyStateBox from '../components/ui/EmptyStateBox';
+import LoadingTicketCard from '../components/ui/LoadingTicketCard';
 import {
   Box,
   Text,
@@ -56,6 +57,14 @@ const Buyings = ({ params }) => {
 
       <Divider my={5} border={'none'}></Divider>
 
+      { !isLoadingTickets && tickets.length === 0 && (
+        <EmptyStateBox
+          title='No ticket bought.'
+          line1='Go to the $hop page'
+          line2='and treat yourself with a ticket.'
+        />
+      )}
+
       <Flex
         direction="column"
         align="center"
@@ -69,7 +78,7 @@ const Buyings = ({ params }) => {
           {/* Empty state */}
           { isLoadingTickets && [...Array(3)].map((_, index) => (
             <GridItem key={index}>
-              <EmptyTicketCard/>
+              <LoadingTicketCard/>
             </GridItem>
           ))}
 

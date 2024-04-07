@@ -10,7 +10,6 @@ import {
   Text,
   Icon,
   Stack,
-  Center,
   Heading,
   Spinner,
   Collapse,

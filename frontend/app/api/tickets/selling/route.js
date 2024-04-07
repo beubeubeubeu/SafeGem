@@ -21,7 +21,7 @@ export async function GET(request) {
     const totalSupply = await publicClient.readContract({
       ...safeTicketsContractConfig,
       functionName: 'totalSupply',
-      blockTag: 'safe'
+      blockTag: 'finalized'
     })
 
     let ticketsOnSale = [];
@@ -31,7 +31,7 @@ export async function GET(request) {
       const ticketSellingInfo = await publicClient.readContract({
         ...marketPlaceContractConfig,
         functionName: 'ticketSelling',
-        blockTag: 'safe',
+        blockTag: 'finalized',
         args: [i]
       })
       if (
@@ -47,13 +47,13 @@ export async function GET(request) {
       const cidImage = await publicClient.readContract({
         ...safeTicketsContractConfig,
         functionName: 'tokenImageCids',
-        blockTag: 'safe',
+        blockTag: 'finalized',
         args: [ticket.tokenId]
       })
       const cidJSON = await publicClient.readContract({
         ...safeTicketsContractConfig,
         functionName: 'tokenJsonCids',
-        blockTag: 'safe',
+        blockTag: 'finalized',
         args: [ticket.tokenId]
       })
       return { ...ticket, cidImage, cidJSON };
