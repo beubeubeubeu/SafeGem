@@ -73,7 +73,9 @@ const Marketplace = () => {
 
   const onBoughtItem = async () => {
     setFetchingTicketsData(true);
+    setIsFetchingEvents(true);
     await fetchTicketsData();
+    await getEvents();
   }
 
   // Get user's balance on contract marketplace
@@ -206,12 +208,12 @@ const Marketplace = () => {
           <Tab>Events</Tab>
         </TabList>
         <TabIndicator
-          mb="8px"
+
           height="2px"
           bg="teal"
           borderRadius="1px"
         />
-        <TabPanels>
+        <TabPanels mt="16px">
           <TabPanel>
             <MarketplaceTickets
               fetchingTicketsData={fetchingTicketsData}
