@@ -15,7 +15,7 @@ The target are concert tickets collectors like [Stevie Dixon](https://steviedixo
 
 - [Features](#features)
 - [Demo](#demo)
-  - [Demo video](#demo-video)
+  - [Demo video](#video)
   - [Dapp](#dapp)
   - [Contracts on OpenSea and Sepolia](#contracts-on-opensea-and-sepolia)
 - [Contracts architecture](#contracts-architecture)
