@@ -17,7 +17,7 @@ As a user I can:
 
 - Authenticate with Rainbowkit
 - Create a collection of tickets (rock, rap, whatever)
-- Create a ticket draft within a collection with info ([opensea standard](https://docs.opensea.io/docs/metadata-standards)) :
+- Create a ticket draft within a collection with info ([OpenSea standard](https://docs.opensea.io/docs/metadata-standards)) :
     -  uploaded image (IPFS)
     -  concert name
     -  venue
