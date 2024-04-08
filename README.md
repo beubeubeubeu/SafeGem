@@ -4,7 +4,7 @@
 
 ![Vercel Deploy](https://therealsujitk-vercel-badge.vercel.app/?app=safe-tickets)
 
-Final project during [Alyra blockchain developer] training(https://www.alyra.fr/formations/decouvrir-la-formation-developpeur-blockchain-alyra). 
+Final project during [Alyra blockchain developer training](https://www.alyra.fr/formations/decouvrir-la-formation-developpeur-blockchain-alyra). 
 
 This is a simple NFT marketplace. NFT's are images and information about physical tickets of passed concert tickets. 
 
