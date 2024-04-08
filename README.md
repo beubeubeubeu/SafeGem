@@ -63,7 +63,7 @@ As a user I can:
 
 ### Video
 
-<a href="https://www.youtube.com/watch?v=NIEDux43hDQ&autoplay=true" target="_blank">
+<a href="https://www.youtube.com/watch?v=NIEDux43hDQ&autoplay=true" target="_blank" width="500">
   <img src="https://github.com/beubeubeubeu/SafeTickets/assets/4832337/2d825560-b1be-492f-981c-80f89d56a9e0" alt="Image Description">
 </a>
 
