@@ -22,7 +22,7 @@ As a user I can:
     -  concert name
     -  venue
     -  date
-    -  type (= "rareness"; gold|category1|floor)
+    -  type (= "rareness" = gold | category1 | floor)
 - Mint a ticket draft within a collection
 - Remove a ticket draft
 - Set a minted ticket on sale
