@@ -77,11 +77,11 @@ If application is deployed it should be here: https://safe-tickets.vercel.app
 
 ### Contracts on OpenSea and Sepolia 
 
-- [SafeTickets.sol on Opensea](https://testnets.opensea.io/collection/safeticket-1)
-- [SafeTickets.sol on Etherscan](https://sepolia.etherscan.io/address/0x8BB9c06cB022cffd6A71D29e6a319828bc685ebD)
-- [Markeplace.sol on Etherscan](https://sepolia.etherscan.io/address/0x50f6b938c0f6d77fbaa5f8033933a75f88b5de03)
-- [UserCollection.sol on Etherscan](https://sepolia.etherscan.io/address/0xE1B3E1d5a0fd7A01C8a9b94c5825778F667d8CE3)
-- [UserCollectionFactory.sol on Etherscan](https://sepolia.etherscan.io/address/0x7CBd2DD300eedf25001E9335F829911994280aD5)
+- [SafeTickets.sol](https://testnets.opensea.io/collection/safeticket-1) on Opensea
+- [SafeTickets.sol](https://sepolia.etherscan.io/address/0x8BB9c06cB022cffd6A71D29e6a319828bc685ebD) on Etherscan
+- [Markeplace.sol](https://sepolia.etherscan.io/address/0x50f6b938c0f6d77fbaa5f8033933a75f88b5de03) on Etherscan
+- [UserCollectionFactory.sol](https://sepolia.etherscan.io/address/0x7CBd2DD300eedf25001E9335F829911994280aD5) on Etherscan
+- [UserCollection.sol](https://sepolia.etherscan.io/address/0xE1B3E1d5a0fd7A01C8a9b94c5825778F667d8CE3) on Etherscan
 
 ## Contracts architecture
 
