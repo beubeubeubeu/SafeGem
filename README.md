@@ -9,7 +9,7 @@ This is a simple NFT marketplace.
 
 NFT's are images and information about physical tickets of passed concert tickets. 
 
-The target are concert tickets collectors like [Stevie Dixon](https://steviedixon.blogspot.com/p/concerts-venir-lyon-et-region.html).
+The targetted users are concert tickets collectors like [Stevie Dixon](https://steviedixon.blogspot.com/p/concerts-venir-lyon-et-region.html).
 
 ## Features
 
