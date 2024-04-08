@@ -65,6 +65,8 @@ As a user I can:
 
 https://youtu.be/NIEDux43hDQ
 
+[![Vidéo démo SafeTickets](https://img.youtube.com/vi/NIEDux43hDQ/0.jpg)](https://www.youtube.com/watch?v=NIEDux43hDQ)
+
 ### Dapp
 
 If application is deployed it should be here: https://safe-tickets.vercel.app
