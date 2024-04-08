@@ -39,7 +39,7 @@ As a user I can:
 
 ### Deployment
 
-If application is deployed it should be here: https://safe-tickets.vercel.app
+If application is ![Vercel Deploy](https://therealsujitk-vercel-badge.vercel.app/?app=safe-tickets) it should be here: https://safe-tickets.vercel.app
 
 ### Contracts on OpenSea and Sepolia 
 
