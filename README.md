@@ -1,9 +1,14 @@
 # SafeTickets
 
 ![hardhat tests workflow](https://github.com/beubeubeubeu/SafeTickets/actions/workflows/hardhat-unit-tests.yml/badge.svg)
+
 ![Vercel Deploy](https://therealsujitk-vercel-badge.vercel.app/?app=safe-tickets)
 
-Final project during [Alyra blockchain developer] training(https://www.alyra.fr/formations/decouvrir-la-formation-developpeur-blockchain-alyra). This is a simple NFT marketplace. NFT's are images and information about physical tickets of passed concert tickets. The target are concert tickets collectors like [Stevie Dixon](https://steviedixon.blogspot.com/p/concerts-venir-lyon-et-region.html).
+Final project during [Alyra blockchain developer] training(https://www.alyra.fr/formations/decouvrir-la-formation-developpeur-blockchain-alyra). 
+
+This is a simple NFT marketplace. NFT's are images and information about physical tickets of passed concert tickets. 
+
+The target are concert tickets collectors like [Stevie Dixon](https://steviedixon.blogspot.com/p/concerts-venir-lyon-et-region.html).
 
 ## Features
 
@@ -47,7 +52,7 @@ If application is deployed it should be here: https://safe-tickets.vercel.app
 
 ### Contracts
 
-#### Oppenzeppelin contracts dependancy:
+#### Oppenzeppelin contracts dependency:
 
 - ReentrancyGuard
 - IERC721Receiver
@@ -71,9 +76,11 @@ If application is deployed it should be here: https://safe-tickets.vercel.app
 - SafeTickets:
     - mainly the "real" NFT collection 
 
-### Diagram
+### Diagrams
 
 #### Contract architecture
+
+<img src="https://github.com/beubeubeubeu/SafeTickets/assets/4832337/f96456f7-9c79-4bfb-afd0-2cd24d15377c" width="500">
 
 #### Mint process
 
@@ -95,10 +102,13 @@ If application is deployed it should be here: https://safe-tickets.vercel.app
 
 A coverage screen 08-04-24 15:00.
 
+<img width="500" alt="Screenshot 2024-04-08 at 16 11 52" src="https://github.com/beubeubeubeu/SafeTickets/assets/4832337/411f1b47-5804-4220-b0f9-69dc682be7cf">
 
 ### Slither
 
 Slither does not pass, some warnings are from Openzeppelin contracts. Other need a timely refacto. Here is a screen of Slither report launched within a GitHub workflow action.
+
+<img width="500" alt="slither" src="https://github.com/beubeubeubeu/SafeTickets/assets/4832337/3a06e2f3-925b-47c2-8fe5-c0ec2b66e845">
 
 ## Stack
 
