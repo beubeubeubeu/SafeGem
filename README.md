@@ -63,7 +63,11 @@ As a user I can:
 
 ### Video
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/NIEDux43hDQ?si=yz8EEJGrY0CbxSi8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<a href="https://www.youtube.com/watch?v=NIEDux43hDQ&autoplay=true" target="_blank">
+  <img src="https://github.com/beubeubeubeu/SafeTickets/assets/4832337/2d825560-b1be-492f-981c-80f89d56a9e0" alt="Image Description">
+</a>
+
+[YouTube link](https://youtu.be/NIEDux43hDQ?si=ajSSNzS6kpyPnkSJ)
 
 ### Dapp
 
