@@ -59,23 +59,23 @@ const MarketplaceBalanceWithdraw = ({
       </Box>
       {/* Withdraw button */}
       <Box
+        bgColor={userBalance === 0 ? "gray.200" : "teal.200" } // Change background color if not clickable
+        onClick={userBalance === 0 ?  undefined : handleWithdrawBalance}
+        pointerEvents={userBalance === 0 ? "none": "auto"} // Disable pointer events if not clickable
+        cursor={userBalance === 0 ? "default" : "pointer"} // Change cursor if clickable
+        _hover={{
+          bgColor: userBalance === 0 ? undefined : "teal.300", // Only apply hover effects if clickable
+          color: userBalance === 0 ? undefined : "whiteAlpha.900",
+        }}
         mt={5}
         minHeight="16px"
-        bgColor="teal.200"
         color="grey.500"
-        onClick={handleWithdrawBalance}
         p="2"
         borderRadius="md"
-        disabled={userBalance === 0}
         display="flex" // Use flexbox for centering
         alignItems="center" // Center vertically
         justifyContent="center" // Center horizontally
-        cursor="pointer" // Change cursor to pointer
         transition="background-color 0.2s, color 0.2s" // Smooth transition for hover effect
-        _hover={{
-          bgColor: "teal.300", // Darker green on hover
-          color: "whiteAlpha.900" // Lighter white text on hover
-        }}
       >
         { (fetchingUserBalance || isWithdrawingBalance)  ? <Spinner color="whiteAlpha.900" /> : <Text fontWeight={'bold'} fontFamily={'mono'} textAlign={'center'} >WITHDRAW</Text> }
       </Box>
