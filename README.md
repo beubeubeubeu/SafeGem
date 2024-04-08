@@ -15,7 +15,7 @@ The target are concert tickets collectors like [Stevie Dixon](https://steviedixo
 
 - [Features](#features)
 - [Demo](#demo)
-  - [Demo video](#video)
+  - [Video](#video)
   - [Dapp](#dapp)
   - [Contracts on OpenSea and Sepolia](#contracts-on-opensea-and-sepolia)
 - [Contracts architecture](#contracts-architecture)
@@ -64,7 +64,7 @@ As a user I can:
 ### Video
 
 <a href="https://www.youtube.com/watch?v=NIEDux43hDQ&autoplay=true" target="_blank" width="500">
-  <img src="https://github.com/beubeubeubeu/SafeTickets/assets/4832337/2d825560-b1be-492f-981c-80f89d56a9e0" alt="Image Description">
+  <img src="https://github.com/beubeubeubeu/SafeTickets/assets/4832337/2d825560-b1be-492f-981c-80f89d56a9e0" alt="YouTube video Safe Tickets demo" width="500">
 </a>
 
 [YouTube link](https://youtu.be/NIEDux43hDQ?si=ajSSNzS6kpyPnkSJ)
