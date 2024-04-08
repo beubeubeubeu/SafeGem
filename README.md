@@ -163,8 +163,20 @@ NEXT_PUBLIC_USER_COLLECTION_FACTORY_CONTRACT_ADDRESS="0xCf7Ed3AccA5a467e9e704C70
 
 ```sh 
 cd ./blockchain
+touch .env
 yarn install
 yarn hardhat run --network hardhat
+```
+
+.env
+
+```sh
+LOCAL=true
+INFURA_PK={REPLACE}
+ETHERSCAN_API_KEY={REPLACE}
+INFURA_URL={REPLACE}
+WALLET_PK={REPLACE}
+ALCHEMY_URL={REPLACE}
 ```
 
 ### Deploy
