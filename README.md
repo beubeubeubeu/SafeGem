@@ -61,7 +61,9 @@ As a user I can:
 
 ## Demo
 
-### Demo video
+### Video
+
+https://youtu.be/NIEDux43hDQ
 
 ### Dapp
 
