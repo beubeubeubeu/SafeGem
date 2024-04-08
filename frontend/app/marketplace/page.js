@@ -181,7 +181,7 @@ const Marketplace = () => {
         <TabList>
           <Tab>Tickets</Tab>
           <Tab>Balance / Withdraw</Tab>
-          <Tab>Events</Tab>
+          <Tab>Activity</Tab>
         </TabList>
         <TabIndicator
 
