@@ -6,9 +6,11 @@
 
 Final project during [Alyra blockchain developer training](https://www.alyra.fr/formations/decouvrir-la-formation-developpeur-blockchain-alyra). 
 
-This is a simple NFT marketplace. NFT's are images and information about physical tickets of passed concert tickets. 
+This is a simple NFT marketplace. 
 
-The target are concert tickets collectors like [Stevie Dixon](https://steviedixon.blogspot.com/p/concerts-venir-lyon-et-region.html).
+NFT's are images and information about physical tickets of passed concert tickets. 
+
+The targetted users are concert tickets collectors like [Stevie Dixon](https://steviedixon.blogspot.com/p/concerts-venir-lyon-et-region.html).
 
 
 ## Table of Contents
