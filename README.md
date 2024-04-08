@@ -77,7 +77,7 @@ If application is deployed it should be here: https://safe-tickets.vercel.app
 
 #### Mint process
 
-![mintProcess](https://github.com/beubeubeubeu/SafeTickets/assets/4832337/565112d2-f0dc-46f9-858d-483042858070)
+![mintProcess](https://github.com/beubeubeubeu/SafeTickets/assets/4832337/565112d2-f0dc-46f9-858d-483042858070  | width=500)
 
 ### Contracts deployment
 
