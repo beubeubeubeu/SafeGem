@@ -36,7 +36,7 @@ As a user I can:
 
 ### Demo video
 
-### Dapp deployment
+### Dapp
 
 If application is deployed it should be here: https://safe-tickets.vercel.app
 
