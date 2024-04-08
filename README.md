@@ -28,7 +28,7 @@ The targetted users are concert tickets collectors like [Stevie Dixon](https://s
   - [Coverage](#coverage)
   - [Slither](#slither)
 - [Stack](#stack)
-  - [Smartcontract](#smartcontract)
+  - [Smart Contracts](#smart-contracts)
   - [File upload](#file-upload)
   - [Front](#front)
   - [CI/CD](#cicd)
@@ -147,7 +147,7 @@ Slither does not pass, some warnings are from Openzeppelin contracts. Other need
 
 ## Stack
 
-### Smartcontract
+### Smart Contracts
 
 - Solidity
 - Hardhat
