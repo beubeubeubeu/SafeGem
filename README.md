@@ -10,6 +10,33 @@ This is a simple NFT marketplace. NFT's are images and information about physica
 
 The target are concert tickets collectors like [Stevie Dixon](https://steviedixon.blogspot.com/p/concerts-venir-lyon-et-region.html).
 
+
+## Table of Contents
+
+- [Features](#features)
+- [Demo](#demo)
+  - [Demo video](#demo-video)
+  - [Dapp](#dapp)
+  - [Contracts on OpenSea and Sepolia](#contracts-on-opensea-and-sepolia)
+- [Contracts architecture](#contracts-architecture)
+  - [Contracts](#contracts)
+  - [Diagrams](#diagrams)
+  - [Contracts deployment](#contracts-deployment)
+- [Coverage & security](#coverage--security)
+  - [Coverage](#coverage)
+  - [Slither](#slither)
+- [Stack](#stack)
+  - [Smartcontract](#smartcontract)
+  - [File upload](#file-upload)
+  - [Front](#front)
+  - [CI/CD](#cicd)
+- [Dapp](#dapp-1)
+- [Important issues](#important-issues)
+- [Run the app locally](#run-the-app-locally)
+  - [Run front](#run-front)
+  - [Run blockchain](#run-blockchain)
+  - [Deploy](#deploy)
+
 ## Features
 
 As a user I can:
