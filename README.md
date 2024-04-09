@@ -216,7 +216,10 @@ NEXT_PUBLIC_USER_COLLECTION_FACTORY_CONTRACT_ADDRESS="0xCf7Ed3AccA5a467e9e704C70
 cd ./blockchain
 touch .env
 yarn install
-yarn hardhat run --network hardhat
+```
+
+```sh
+yarn hardhat node --network hardhat
 ```
 
 .env
@@ -240,4 +243,10 @@ to Sepolia
 
 ```sh
 yarn hardhat run scripts/deploy.js --network sepolia
+```
+
+local "seed" script (local)
+
+```sh
+yarn hardhat run scripts/createCollection.js --network localhost
 ```
